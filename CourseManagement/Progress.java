@@ -46,5 +46,11 @@ public class Progress {
     public boolean courseCompletion(){
         return !course.getLessons().isEmpty() && course.getLessons().size() == completedLessons.size();
     }
+    public void displayProgressTerminal() {
+        System.out.println("Progress for " + student.getUsername() + " , Course " + course.getTitle());
+        System.out.println("Completed " + completedLessons.size() + " / " + course.getLessons().size() + " lessons");
+        System.out.printf("Percentage: %.2f%%\n", getPercentage());
+    }
+
 
 }

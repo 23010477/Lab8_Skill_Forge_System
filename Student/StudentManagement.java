@@ -124,4 +124,15 @@ public class StudentManagement {
         }
         System.out.println("Student not found");
     }
+
+    public void showStudentProgress(Student student, int courseId){
+        for (Progress p : student.getProgresses()){
+            if (p.getCourse().getCourseId() == courseId){
+                p.displayProgressTerminal();
+                break;
+            }
+
+        }
+        System.out.println("No progress found.");
+    }
 }
