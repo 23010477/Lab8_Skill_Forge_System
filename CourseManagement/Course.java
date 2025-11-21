@@ -90,7 +90,16 @@ public class Course {
     }
 
     public void completeLesson(Lesson lesson, Student student) {
-        completedLessons.add(lesson);
+        Progress stdProgress = null;
+        for( Progress p : student.getProgresses()){
+            if(p.getCourse().equals(this)){
+                stdProgress = p;
+                break;
+            }
+        }
+        if (stdProgress != null ){
+            stdProgress.addCompletedLesson(lesson);
+        }
     }
     
     public ArrayList<Student> getStudents() {

@@ -1,7 +1,6 @@
 package CourseManagement;
 
 import Student.Student;
-import CourseManagement.Course;
 
 import java.util.ArrayList;
 
@@ -17,7 +16,7 @@ public class Progress {
         this.completedLessons = new ArrayList<>();
     }
 
-    public void AddCompletedLesson(Lesson lesson){
+    public void addCompletedLesson(Lesson lesson){
         if (lesson != null && !completedLessons.contains(lesson)){
             completedLessons.add(lesson);
         }
@@ -38,10 +37,14 @@ public class Progress {
     public void setCourse(Course course) {
         this.course = course;
     }
-    public double getpercentage() {
+    public double getPercentage() {
         if(course.getLessons().isEmpty()) return 0;
         return (double) (completedLessons.size() * 100) / course.getLessons().size();
 
+    }
+
+    public boolean courseCompletion(){
+        return !course.getLessons().isEmpty() && course.getLessons().size() == completedLessons.size();
     }
 
 }
