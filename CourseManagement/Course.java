@@ -18,6 +18,7 @@ public class Course {
         this.setDescription(description);
         this.setInstructorId(instructorId);
         this.lessons = new ArrayList<>();
+        this.completedLessons = new ArrayList<>();
         this.students = new ArrayList<>();
     }
 

@@ -3,18 +3,31 @@ package CourseManagement;
 import Student.Student;
 import CourseManagement.Course;
 
+import java.util.ArrayList;
+
 public class Progress {
     private Student student;
     private Course course;
-    private double percentage;
+    private ArrayList<Lesson> completedLessons;
+
 
     public Progress(Student student, Course course) {
         this.setStudent(student);
         this.setCourse(course);
-        this.percentage = 0;
+        this.completedLessons = new ArrayList<>();
     }
+
+    public void AddCompletedLesson(Lesson lesson){
+        if (lesson != null && !completedLessons.contains(lesson)){
+            completedLessons.add(lesson);
+        }
+    }
+
     public Student getStudent() {
         return student;
+    }
+    public ArrayList<Lesson> getCompletedLessons(){
+        return completedLessons;
     }
     public void setStudent(Student student) {
         this.student = student;
@@ -26,9 +39,9 @@ public class Progress {
         this.course = course;
     }
     public double getpercentage() {
-        return percentage;
+        if(course.getLessons().isEmpty()) return 0;
+        return (double) (completedLessons.size() * 100) / course.getLessons().size();
+
     }
-    public void setpercentage(double percentage) {
-        this.percentage = percentage;
-    }
+
 }
