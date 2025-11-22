@@ -1,5 +1,7 @@
 package UserAccount;
 
+import java.util.List;
+import CourseManagement.CourseStatus;
 import CourseManagement.Course;
 import java.util.ArrayList;
 
@@ -11,6 +13,8 @@ public class AdminRole {
     private String hashedPass;
     private ArrayList<Course> createdCourses;
     private final Role role = Role.INSTRUCTOR;
+    private List<Course> courses = new ArrayList<>();
+
     
     public AdminRole(int userId, String userName,String email,String passwordHash ){
         this.userId = userId;
@@ -55,5 +59,14 @@ public class AdminRole {
         return createdCourses;
     }
     
+public Course getCourseById(int courseId) {
+    for (Course c : createdCourses) {
+        if (c.getCourseId() == courseId) { 
+            return c;
+        }
+    }
+    return null;
+}
+
 
 }
