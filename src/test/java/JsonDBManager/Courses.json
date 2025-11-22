@@ -1,0 +1,19 @@
+[{
+    "description": "fwshtjulo;poiuytrew2345uiop;l,mnbvcxzasdfghjkl;",
+    "students": [],
+    "title": "course1",
+    "courseId": 1,
+    "instructorId": "2",
+    "lessons": [
+        {
+            "lessonId": 1,
+            "title": "lesson 1",
+            "content": "wrgerht"
+        },
+        {
+            "lessonId": 2,
+            "title": "lesson2",
+            "content": "wefrgw4r2"
+        }
+    ]
+}]
