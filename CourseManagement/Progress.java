@@ -33,7 +33,8 @@ public class Progress {
     }
     public Course getCourse() {
         return course;
-    }
+    }  
+    
     public void setCourse(Course course) {
         this.course = course;
     }
@@ -51,6 +52,6 @@ public class Progress {
         System.out.println("Completed " + completedLessons.size() + " / " + course.getLessons().size() + " lessons");
         System.out.printf("Percentage: %.2f%%\n", getPercentage());
     }
-
+//dsdnjsndjsdjsd
 
 }
