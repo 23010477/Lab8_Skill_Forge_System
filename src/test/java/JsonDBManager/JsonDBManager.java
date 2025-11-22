@@ -45,7 +45,7 @@ public class JsonDBManager {
                 if (o.has("students")) {
                     JSONArray studs = o.getJSONArray("students");
                     for (int j = 0; j < studs.length(); j++) {
-                        // student may be object or primitive id
+
                         if (studs.isNull(j))
                             continue;
                         Object so = studs.get(j);
@@ -129,7 +129,7 @@ public class JsonDBManager {
             JSONArray arr = new JSONArray(content);
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject o = arr.getJSONObject(i);
-                // Only read objects with type "student" or no type (for backward compatibility)
+
                 String type = o.optString("type", "student");
                 if (type.equals("student") || !o.has("type")) {
                     int userID = o.optInt("userID", 0);
@@ -147,7 +147,6 @@ public class JsonDBManager {
     }
 
     public static void writeStudents(String filePath, ArrayList<Student> students) {
-        // Read existing users to preserve instructors
         ArrayList<Instructor> existingInstructors = readInstructors(filePath);
 
         JSONArray arr = new JSONArray();

@@ -7,6 +7,13 @@
         "username": "saif"
     },
     {
+        "type": "student",
+        "userID": 2,
+        "hashedPass": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+        "email": "ak@gmail.com",
+        "username": "ak"
+    },
+    {
         "type": "instructor",
         "userId": 0,
         "hashedPass": "e2217d3e4e120c6a3372a1890f03e232b35ad659d71f7a62501a4ee204a3e66d",
