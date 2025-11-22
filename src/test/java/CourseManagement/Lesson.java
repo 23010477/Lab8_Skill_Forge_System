@@ -4,11 +4,13 @@ public class Lesson {
     private int lessonId;
     private String title;
     private String content;
+    private Quizzes quiz;
 
     public Lesson(int lessonId, String title, String content) {
         this.setLessonId(lessonId);
         this.setTitle(title);
         this.setContent(content);
+        this.quiz = null;
     }
     public int getLessonId() {
         return lessonId;
@@ -27,5 +29,13 @@ public class Lesson {
     }
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Quizzes getQuiz() {
+        return quiz;
+    }
+
+    public void setQuiz(Quizzes quiz) {
+        this.quiz = quiz;
     }
 }
