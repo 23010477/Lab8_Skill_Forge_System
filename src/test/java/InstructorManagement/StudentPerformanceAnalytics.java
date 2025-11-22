@@ -8,9 +8,13 @@ public class StudentPerformanceAnalytics {
     public void recordQuizResults(){
         
     }
-    public void lessonCompletion(Lesson completedLesson, Student student,Progress p){
-      p.addCompletedLesson(completedLesson);
-      student.setProgresses(p.getCompletedLessons());
+    public void lessonCompletion(Lesson completedLesson,Progress p){
+       try{
+           p.addCompletedLesson(completedLesson);
+       }catch(Exception e){
+           System.out.println("Lesson is null!");
+       }
+     
     }
     public void progressionData(Student student){
         ArrayList<Progress> progresses=new ArrayList(student.getProgresses());
