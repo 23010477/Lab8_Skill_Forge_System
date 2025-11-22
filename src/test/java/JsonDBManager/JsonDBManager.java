@@ -12,9 +12,15 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 public class JsonDBManager {
+    private static final String COURSE_FILE = "courses.json";
+
+    public JsonDBManager() {
+    }
 
     public static ArrayList<Course> readCourses(String filePath) {
         ArrayList<Course> courses = new ArrayList<>();
@@ -119,6 +125,24 @@ public class JsonDBManager {
             e.printStackTrace();
         }
     }
+
+    public static void saveCourses(List<Course> courses) {
+        JSONArray array = new JSONArray();
+        for (Course c : courses) {
+            JSONObject obj = new JSONObject();
+            obj.put("courseId", c.getCourseId());
+            obj.put("title", c.getTitle());
+            obj.put("status", c.getStatus().toString());
+            array.put(obj);
+        }
+
+        try {
+            Files.write(Paths.get(COURSE_FILE), array.toString(4).getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static ArrayList<Student> readStudents(String filePath) {
         ArrayList<Student> students = new ArrayList<>();
