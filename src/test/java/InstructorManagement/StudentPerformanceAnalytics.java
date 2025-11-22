@@ -1,16 +1,18 @@
 
 package InstructorManagement;
 import CourseManagement.*;
+import JsonDBManager.JsonDBManager;
 import Student.*;
 import java.util.ArrayList;
 public class StudentPerformanceAnalytics {
-  
+  private static final String USERS_FILE = "src/test/java/JsonDBManager/users.json";
     public void recordQuizResults(){
         //will implement once quiz class is ready
     }
     public void lessonCompletion(Lesson completedLesson,Progress p){
        try{
            p.addCompletedLesson(completedLesson);
+      
        }catch(Exception e){
            System.out.println("Lesson is null!");
        }
@@ -30,17 +32,15 @@ public class StudentPerformanceAnalytics {
     public void lessonStatics(){
        // will implement once quiz class is ready
     }
-    public void courseStatics(Course c){
-        int noOfCompletion=0;
+    public void courseStatics(Course c,StudentManagement studentManagement){
         ArrayList<Student> listOfStudents=new ArrayList<>(c.getStudents());
         System.out.println("The course is: " +c.getTitle());
         System.out.println("The Students enrolled in the course:");
         for(Student s:listOfStudents){
             System.out.print(s.getUsername());
+            studentManagement.showStudentProgress(s,c.getCourseId());
         }
-        System.out.println();
        
-        //will continue implementing when theres a method that checks progress for a single course
     }
     
 }
