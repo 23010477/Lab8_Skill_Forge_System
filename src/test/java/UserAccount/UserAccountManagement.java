@@ -37,8 +37,10 @@ public abstract class UserAccountManagement {
         if (email != null && p.matcher(email).matches()) {
             emailValid = true;
         } else {
+
             JOptionPane.showMessageDialog(null, "Invalid email format", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+            throw new IllegalArgumentException();
+
         }
 
         if (User == null || User.trim().isEmpty()) {
