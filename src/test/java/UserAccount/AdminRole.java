@@ -1,9 +1,11 @@
 package UserAccount;
 
 import java.util.List;
-import CourseManagement.CourseStatus;
 import CourseManagement.Course;
+import java.time.Instant;
 import java.util.ArrayList;
+import CourseManagement.CourseStatus;
+
 
 
 public class AdminRole {
@@ -68,5 +70,14 @@ public Course getCourseById(int courseId) {
     return null;
 }
 
-
+  public void approveCourse(int courseId) {
+    Course c = getCourseById(courseId);
+    if (c != null && c.getStatus() == CourseStatus.PENDING) {
+        c.setstatus(CourseStatus.APPROVED);
+        System.out.println("Course approved: " + c.getTitle());
+    } else {
+        System.out.println("Course not found or not pending.");
+    }
 }
+}
+
