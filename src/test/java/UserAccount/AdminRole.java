@@ -79,5 +79,12 @@ public Course getCourseById(int courseId) {
         System.out.println("Course not found or not pending.");
     }
 }
+  public void rejectCourse(int courseId) {
+    Course c = getCourseById(courseId);
+    if (c != null && c.getStatus() == CourseStatus.PENDING) {
+        c.setstatus(CourseStatus.REJECTED);
+        System.out.println("Course rejected: " + c.getTitle());
+}
+}
 }
 
