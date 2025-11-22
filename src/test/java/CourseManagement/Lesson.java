@@ -30,4 +30,12 @@ public class Lesson {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public Quizzes getQuiz() {
+        return quiz;
+    }
+
+    public void setQuiz(Quizzes quiz) {
+        this.quiz = quiz;
+    }
 }
