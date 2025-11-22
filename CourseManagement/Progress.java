@@ -50,6 +50,7 @@ public class Progress {
         System.out.println("Progress for " + student.getUsername() + " , Course " + course.getTitle());
         System.out.println("Completed " + completedLessons.size() + " / " + course.getLessons().size() + " lessons");
         System.out.printf("Percentage: %.2f%%\n", getPercentage());
+
     }
 
 
