@@ -26,9 +26,24 @@ public class Progress {
 
     }
 
+    public ArrayList<Integer> getListOfAttempts(int lessonId){
+        return quizAttempts.getOrDefault(lessonId,new ArrayList<>());
+    }
+
     public void addCompletedLesson(Lesson lesson){
-        if (lesson != null && !completedLessons.contains(lesson)){
+        if(lesson.getQuiz()==null){
+            if (lesson != null && !completedLessons.contains(lesson)){
             completedLessons.add(lesson);
+            }
+        }else {
+            ArrayList<Integer> attempts = getListOfAttempts(lesson.getLessonId());
+            for(int attempt : attempts){
+                if(attempt >= 50) {  // 23meloha percentages fl 7esbaaaa!!
+                completedLessons.add(lesson);
+                break;
+                }
+
+            }
         }
     }
 
