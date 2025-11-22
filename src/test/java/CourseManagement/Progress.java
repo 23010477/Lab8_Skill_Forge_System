@@ -3,17 +3,27 @@ package CourseManagement;
 import Student.Student;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Progress {
     private Student student;
     private Course course;
     private ArrayList<Lesson> completedLessons;
+    private HashMap<Integer, ArrayList<Integer>> quizAttempts;
 
 
     public Progress(Student student, Course course) {
         this.setStudent(student);
         this.setCourse(course);
         this.completedLessons = new ArrayList<>();
+        this.quizAttempts = new HashMap<>();
+    }
+
+    public void addAttempt(int lessonId, int stdScore ){
+        quizAttempts.putIfAbsent(lessonId, new ArrayList<>());
+        quizAttempts.get(lessonId).add(stdScore);
+
+
     }
 
     public void addCompletedLesson(Lesson lesson){
@@ -25,11 +35,11 @@ public class Progress {
     public Student getStudent() {
         return student;
     }
-    public ArrayList<Lesson> getCompletedLessons(){
-        return completedLessons;
-    }
     public void setStudent(Student student) {
         this.student = student;
+    }
+    public ArrayList<Lesson> getCompletedLessons(){
+        return completedLessons;
     }
     public Course getCourse() {
         return course;
