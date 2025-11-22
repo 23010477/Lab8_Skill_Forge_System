@@ -63,7 +63,10 @@ public class CourseManagementSystem {
 
     public ArrayList<Course> getCoursesByInstructor(String instructorId) {
         ArrayList<Course> instructorCourses = new ArrayList<>();
+        System.out.println("DEBUG: CMS searching for courses for instructor ID: " + instructorId);
         for (Course course : courses) {
+            System.out.println(
+                    "DEBUG: Checking course " + course.getTitle() + " with instructor ID: " + course.getInstructorId());
             if (course.getInstructorId() != null && course.getInstructorId().equals(instructorId)) {
                 instructorCourses.add(course);
             }

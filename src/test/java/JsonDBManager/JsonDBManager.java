@@ -229,8 +229,9 @@ public class JsonDBManager {
                 // Only read objects with type "instructor"
                 String type = o.optString("type", "");
                 if (type.equals("instructor")) {
-                    int instructorId = o.optInt("instructorId", 0);
+                    int instructorId = o.optInt("userId", o.optInt("instructorId", 0));
                     String name = o.optString("username", null);
+                    System.out.println("DEBUG: Read instructor " + name + " with ID: " + instructorId);
                     String email = o.optString("email", null);
                     String hashedPass = o.optString("hashedPass", null);
                     Instructor instructor = new Instructor(instructorId, name, email, hashedPass);
@@ -264,7 +265,7 @@ public class JsonDBManager {
         for (Instructor i : instructors) {
             JSONObject o = new JSONObject();
             o.put("type", "instructor");
-            o.put("instructorId", i.getUserId());
+            o.put("userId", i.getUserId());
             o.put("username", i.getUserName());
             o.put("email", i.getEmail());
             o.put("hashedPass", i.getHashedPass());

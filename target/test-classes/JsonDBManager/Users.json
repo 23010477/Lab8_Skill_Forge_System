@@ -15,21 +15,21 @@
     },
     {
         "type": "student",
-        "userID": 4,
+        "userID": 3,
         "hashedPass": "9b56ca8566a48b98a8c29a7fd307038ed555123439a937eb85d9c45166881e6e",
         "email": "mohammed@gmail.com",
         "username": "mohammed"
     },
     {
         "type": "instructor",
-        "userId": 0,
+        "userId": 1,
         "hashedPass": "e2217d3e4e120c6a3372a1890f03e232b35ad659d71f7a62501a4ee204a3e66d",
         "email": "ahmed@gmail.com",
         "username": "ahmed"
     },
     {
         "type": "instructor",
-        "userId": 0,
+        "userId": 2,
         "hashedPass": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
         "email": "AA@gmail.com",
         "username": "AA"

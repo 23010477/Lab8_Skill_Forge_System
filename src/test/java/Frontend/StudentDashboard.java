@@ -278,7 +278,17 @@ public class StudentDashboard extends JFrame {
                     String.format("%.1f%%", progress)
             });
         }
-
+        // load lessons for each course
+        for (Course course : currentStudent.getEnrolledCourses()) {
+            lessonsModel.setRowCount(0);
+            for (Lesson lesson : course.getLessons()) {
+                lessonsModel.addRow(new Object[] {
+                        lesson.getLessonId(),
+                        lesson.getTitle(),
+                        lesson.getContent()
+                });
+            }
+        }
         // Load available courses (not enrolled)
         availableModel.setRowCount(0);
         ArrayList<Course> allCourses = courseManagement.getAllCourses();
@@ -401,10 +411,15 @@ public class StudentDashboard extends JFrame {
 
         // Load lessons
         lessonsModel.setRowCount(0);
+        System.out.println(
+                "DEBUG: Loading lessons for course: " + course.getTitle() + " (ID: " + course.getCourseId() + ")");
+        System.out.println("DEBUG: Course has " + course.getLessons().size() + " lessons");
+
         Progress progress = getProgressForCourse(course);
         ArrayList<Lesson> completedLessons = progress != null ? progress.getCompletedLessons() : new ArrayList<>();
 
         for (Lesson lesson : course.getLessons()) {
+            System.out.println("DEBUG: Adding lesson: " + lesson.getTitle());
             String status = completedLessons.contains(lesson) ? "Completed" : "Not Completed";
             lessonsModel.addRow(new Object[] {
                     lesson.getLessonId(),
