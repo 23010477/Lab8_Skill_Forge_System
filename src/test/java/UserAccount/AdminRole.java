@@ -5,6 +5,7 @@ import CourseManagement.Course;
 import java.time.Instant;
 import java.util.ArrayList;
 import CourseManagement.CourseStatus;
+import JsonDBManager.JsonDBManager;
 
 
 
@@ -14,7 +15,6 @@ public class AdminRole {
     private String email;
     private String hashedPass;
     private ArrayList<Course> createdCourses;
-    private final Role role = Role.INSTRUCTOR;
     private List<Course> courses = new ArrayList<>();
 
     
@@ -84,7 +84,7 @@ public Course getCourseById(int courseId) {
     if (c != null && c.getStatus() == CourseStatus.PENDING) {
         c.setstatus(CourseStatus.REJECTED);
         System.out.println("Course rejected: " + c.getTitle());
-}
-}
-}
+    }
+  }
 
+}
