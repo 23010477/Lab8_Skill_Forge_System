@@ -17,5 +17,7 @@ public class Quizzes {
     }
 
 
-
+    public void addQuestion(Questions question){
+        questions.add(question);
+    }
 }
