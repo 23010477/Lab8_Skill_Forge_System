@@ -27,5 +27,11 @@ public class StudentPerformanceAnalytics {
 
         
     }
+    public void lessonStatics(){
+        
+    }
+    public void courseStatics(){
+        
+    }
     
 }
