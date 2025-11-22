@@ -75,6 +75,9 @@ public Course getCourseById(int courseId) {
     if (c != null && c.getStatus() == CourseStatus.PENDING) {
         c.setstatus(CourseStatus.APPROVED);
         System.out.println("Course approved: " + c.getTitle());
+        
+                JsonDBManager.saveCourses(createdCourses);
+
     } else {
         System.out.println("Course not found or not pending.");
     }
@@ -84,6 +87,9 @@ public Course getCourseById(int courseId) {
     if (c != null && c.getStatus() == CourseStatus.PENDING) {
         c.setstatus(CourseStatus.REJECTED);
         System.out.println("Course rejected: " + c.getTitle());
+        
+                JsonDBManager.saveCourses(createdCourses);
+
     }
   }
 
