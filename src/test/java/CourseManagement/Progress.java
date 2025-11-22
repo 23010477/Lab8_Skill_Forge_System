@@ -23,6 +23,9 @@ public class Progress {
         quizAttempts.putIfAbsent(lessonId, new ArrayList<>());
         quizAttempts.get(lessonId).add(stdScore);
 
+        Lesson l = course.findLessonById(lessonId);
+        addCompletedLesson(l);
+
 
 
 
@@ -41,7 +44,7 @@ public class Progress {
         }else {
             ArrayList<Integer> attempts = getListOfAttempts(lesson.getLessonId());
             for(int attempt : attempts){
-                if(attempt >= 50) {  // 23meloha percentages fl 7esbaaaa!!
+                if(attempt >= 50) {  // PERCENTAGE FL 7esbaaaa!!
                 completedLessons.add(lesson);
                 break;
                 }
