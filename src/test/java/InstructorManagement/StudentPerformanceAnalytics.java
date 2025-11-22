@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class StudentPerformanceAnalytics {
   
     public void recordQuizResults(){
-        
+        //will implement once quiz class is ready
     }
     public void lessonCompletion(Lesson completedLesson,Progress p){
        try{
@@ -28,12 +28,11 @@ public class StudentPerformanceAnalytics {
         
     }
     public void lessonStatics(){
-        
+       // will implement once quiz class is ready
     }
-    public void courseStatics(Course c,Student student){
+    public void courseStatics(Course c){
         int noOfCompletion=0;
         ArrayList<Student> listOfStudents=new ArrayList<>(c.getStudents());
-        ArrayList<Progress> listOfProgress=new ArrayList<>(student.getProgresses());
         System.out.println("The course is: " +c.getTitle());
         System.out.println("The Students enrolled in the course:");
         for(Student s:listOfStudents){
@@ -41,7 +40,7 @@ public class StudentPerformanceAnalytics {
         }
         System.out.println();
        
-        
+        //will continue implementing when theres a method that checks progress for a single course
     }
     
 }
