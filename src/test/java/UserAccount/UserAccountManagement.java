@@ -28,7 +28,7 @@ public abstract class UserAccountManagement {
         this.Instructors = new ArrayList<>();
     }
 
-    public void signUp(String User, String email, String Pass, Role r) {
+    public void signUp(String User, String email, String Pass, Role r) throws  IllegalArgumentException {
         boolean emailValid = false, userValid = false, passValid = false;
 
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@"
