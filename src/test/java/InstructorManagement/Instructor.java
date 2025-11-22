@@ -118,12 +118,13 @@ public class Instructor {
 
     }
 
-    public void addLesson(int lessonId, String title, String content) {
+    public void addLesson(Course c,int lessonId, String title, String content) {
         Lesson newLesson = new Lesson(lessonId, title, content);
+        c.addLesson(newLesson);
     }
 
-    public void deleteLesson(Course c, int lessonId) {
-        c.removeLesson(lessonId);
+    public void deleteLesson(Course c,Lesson l) {
+        c.removeLesson(l);
     }
 
     public void viewStudent(Course c) {
