@@ -11,6 +11,7 @@ public class Course {
     private ArrayList<Lesson> lessons;
     private ArrayList<Lesson> completedLessons;
     private ArrayList<Student> students;
+    private CourseStatus status = CourseStatus.PENDING;
 
     public Course(int courseId, String title, String description, String instructorId) {
         this.setCourseId(courseId);
@@ -20,6 +21,7 @@ public class Course {
         this.lessons = new ArrayList<>();
         this.completedLessons = new ArrayList<>();
         this.students = new ArrayList<>();
+        this.status = CourseStatus.PENDING;
     }
 
     public int getCourseId() {
