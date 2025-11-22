@@ -3,6 +3,7 @@ package JsonDBManager;
 import CourseManagement.Course;
 import CourseManagement.Lesson;
 import Student.Student;
+import Student.Certificate;
 import InstructorManagement.Instructor;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -143,7 +144,6 @@ public class JsonDBManager {
         }
     }
 
-
     public static ArrayList<Student> readStudents(String filePath) {
         ArrayList<Student> students = new ArrayList<>();
         try {
@@ -161,6 +161,19 @@ public class JsonDBManager {
                     String email = o.optString("email", null);
                     String hashedPass = o.optString("hashedPass", null);
                     Student s = new Student(userID, user, email, hashedPass);
+
+                    if (o.has("certificates")) {
+                        JSONArray certs = o.getJSONArray("certificates");
+                        for (int j = 0; j < certs.length(); j++) {
+                            JSONObject cObj = certs.getJSONObject(j);
+                            String certId = cObj.optString("certificateId", "");
+                            int sId = cObj.optInt("studentId", 0);
+                            int cId = cObj.optInt("courseId", 0);
+                            String cTitle = cObj.optString("courseTitle", "");
+                            String date = cObj.optString("dateEarned", "");
+                            s.addCertificate(new Certificate(certId, sId, cId, cTitle, date));
+                        }
+                    }
                     students.add(s);
                 }
             }

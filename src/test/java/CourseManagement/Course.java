@@ -56,6 +56,14 @@ public class Course {
         this.instructorId = instructorId;
     }
 
+    public CourseStatus getStatus() {
+        return status;
+    }
+    
+    public void setStatus(CourseStatus status) {
+        this.status = status;
+    }
+
     public ArrayList<Lesson> getLessons() {
         return lessons;
     }

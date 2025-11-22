@@ -178,12 +178,7 @@ public class LoginFrame extends JFrame {
             
             messageLabel.setText("Login successful!");
             messageLabel.setForeground(new Color(0, 153, 0)); // Green
-            
-            // Open appropriate dashboard based on role
-            Timer timer = new Timer(1000, new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    dispose(); // Close login frame
+            dispose(); // Close login frame
                     if (selectedRole == Role.STUDENT && student != null) {
                         new StudentDashboard(student).setVisible(true);
                     } else if (selectedRole == Role.INSTRUCTOR && instructor != null) {
@@ -192,10 +187,23 @@ public class LoginFrame extends JFrame {
                         // TODO: Create AdminDashboard if needed
                         JOptionPane.showMessageDialog(null, "Admin Dashboard - Coming Soon", "Admin", JOptionPane.INFORMATION_MESSAGE);
                     }
-                }
-            });
-            timer.setRepeats(false);
-            timer.start();
+            // // Open appropriate dashboard based on role
+            // Timer timer = new Timer(1000, new ActionListener() {
+            //     @Override
+            //     public void actionPerformed(ActionEvent e) {
+            //         dispose(); // Close login frame
+            //         if (selectedRole == Role.STUDENT && student != null) {
+            //             new StudentDashboard(student).setVisible(true);
+            //         } else if (selectedRole == Role.INSTRUCTOR && instructor != null) {
+            //             new InstructorDashboard(instructor).setVisible(true);
+            //         } else if (selectedRole == Role.ADMIN) {
+            //             // TODO: Create AdminDashboard if needed
+            //             JOptionPane.showMessageDialog(null, "Admin Dashboard - Coming Soon", "Admin", JOptionPane.INFORMATION_MESSAGE);
+            //         }
+            //     }
+            // });
+            // timer.setRepeats(false);
+            // timer.start();
         } else {
             messageLabel.setText("Invalid username or password");
             messageLabel.setForeground(Color.RED);

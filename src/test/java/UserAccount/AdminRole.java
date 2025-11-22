@@ -73,7 +73,7 @@ public Course getCourseById(int courseId) {
   public void approveCourse(int courseId) {
     Course c = getCourseById(courseId);
     if (c != null && c.getStatus() == CourseStatus.PENDING) {
-        c.setstatus(CourseStatus.APPROVED);
+        c.setStatus(CourseStatus.APPROVED);
         System.out.println("Course approved: " + c.getTitle());
         
                 JsonDBManager.saveCourses(createdCourses);
@@ -85,7 +85,7 @@ public Course getCourseById(int courseId) {
   public void rejectCourse(int courseId) {
     Course c = getCourseById(courseId);
     if (c != null && c.getStatus() == CourseStatus.PENDING) {
-        c.setstatus(CourseStatus.REJECTED);
+        c.setStatus(CourseStatus.REJECTED);
         System.out.println("Course rejected: " + c.getTitle());
         
                 JsonDBManager.saveCourses(createdCourses);

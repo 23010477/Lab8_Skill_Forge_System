@@ -1,4 +1,5 @@
 package Frontend;
+
 import javax.swing.*;
 
 // <editor-fold defaultstate="collapsed" desc="Main Class">
@@ -6,7 +7,7 @@ import javax.swing.*;
  * Main entry point for the application
  */
 public class Main {
-    
+
     // <editor-fold defaultstate="collapsed" desc="Main Method">
     /**
      * @param args the command line arguments
