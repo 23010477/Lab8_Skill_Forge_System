@@ -103,6 +103,14 @@ public class Course {
             stdProgress.addCompletedLesson(lesson);
         }
     }
+
+    public Lesson findLessonById(int lessonId){
+        for (Lesson l : lessons){
+            if (l.getLessonId() == lessonId)
+                return l;
+        }
+        return null;
+    }
     
     public ArrayList<Student> getStudents() {
         return students;

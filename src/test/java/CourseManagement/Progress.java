@@ -24,6 +24,9 @@ public class Progress {
         quizAttempts.get(lessonId).add(stdScore);
 
 
+
+
+
     }
 
     public ArrayList<Integer> getListOfAttempts(int lessonId){
