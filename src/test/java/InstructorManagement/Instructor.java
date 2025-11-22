@@ -131,7 +131,7 @@ public class Instructor {
         ArrayList<Student> students = new ArrayList<>();
         students.addAll(c.getStudents());
         for (Student s : students) {
-            System.out.println(s);
+            System.out.println(s.getUsername());
         }
     }
 }
