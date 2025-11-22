@@ -45,19 +45,19 @@ public abstract class UserAccountManagement {
 
         if (User == null || User.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please enter a username", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+            throw new IllegalArgumentException();
 
         } else if (!User.matches("[a-zA-Z]+")) {
             JOptionPane.showMessageDialog(null, "Username must contain only letters", "Error",
                     JOptionPane.ERROR_MESSAGE);
-            return;
+            throw new IllegalArgumentException();
         } else {
             userValid = true;
         }
 
         if (Pass == null || Pass.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please enter a password", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+            throw new IllegalArgumentException();
         } else {
             passValid = true;
         }
@@ -66,14 +66,14 @@ public abstract class UserAccountManagement {
             // Check if username already exists
             if (studentManagement.findStudentByUsername(User) != null) {
                 JOptionPane.showMessageDialog(null, "Username already exists", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
+                throw new IllegalArgumentException();
             }
 
             // Check if email already exists
             for (Student s : studentManagement.getAllStudents()) {
                 if (s.getEmail() != null && s.getEmail().equals(email)) {
                     JOptionPane.showMessageDialog(null, "Email already exists", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
+                    throw new IllegalArgumentException();
                 }
             }
 
@@ -84,7 +84,7 @@ public abstract class UserAccountManagement {
 
             if (hashedPass == null) {
                 JOptionPane.showMessageDialog(null, "Error hashing password", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
+                throw new IllegalArgumentException();
             }
 
             if (r == Role.INSTRUCTOR) {
