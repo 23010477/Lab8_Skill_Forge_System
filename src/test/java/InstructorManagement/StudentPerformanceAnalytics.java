@@ -30,15 +30,17 @@ public class StudentPerformanceAnalytics {
     public void lessonStatics(){
         
     }
-    public void courseStatics(Course c){
+    public void courseStatics(Course c,Student student){
+        int noOfCompletion=0;
         ArrayList<Student> listOfStudents=new ArrayList<>(c.getStudents());
+        ArrayList<Progress> listOfProgress=new ArrayList<>(student.getProgresses());
         System.out.println("The course is: " +c.getTitle());
         System.out.println("The Students enrolled in the course:");
         for(Student s:listOfStudents){
-            System.out.print(s);
+            System.out.print(s.getUsername());
         }
         System.out.println();
-        
+       
         
     }
     
