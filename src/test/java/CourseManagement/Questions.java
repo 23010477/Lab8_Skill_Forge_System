@@ -16,6 +16,32 @@ public class Questions {
         this.indexOfCorrectOption = indexOfCorrectOption;
     }
 
+    public boolean checkAns(int indexOfStudentAnswer){
+        if (indexOfStudentAnswer == indexOfCorrectOption)
+            return true;
+        return false;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public ArrayList<String> getMcqOptions() {
+        return mcqOptions;
+    }
+
+    public void setIndexOfCorrectOption(int indexOfCorrectOption) {
+        this.indexOfCorrectOption = indexOfCorrectOption;
+    }
+
+    public int getIndexOfCorrectOption() {
+        return indexOfCorrectOption;
+    }
+
 
 }
 
