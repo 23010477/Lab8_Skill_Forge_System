@@ -12,7 +12,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
-
+import java.util.Map;
 // <editor-fold defaultstate="collapsed" desc="InstructorDashboard Class">
 /**
  * Instructor dashboard for course and lesson management
@@ -32,6 +32,8 @@ public class InstructorDashboard extends JFrame {
     private JButton viewStudentsButton, viewStudentProgressButton, refreshButton, logoutButton;
     private JTabbedPane tabbedPane;
     private Course selectedCourse;
+    private JButton insightsButton;
+    
     private int nextCourseId = 1;
     private int nextLessonId = 1;
     // </editor-fold>
@@ -118,7 +120,48 @@ public class InstructorDashboard extends JFrame {
         refreshButton = new JButton("Refresh");
         logoutButton = new JButton("Logout");
     }
-    
+    public class ChartFrame extends JFrame {
+
+    public ChartFrame(String title, JPanel chartPanel) {
+        setTitle(title);
+        setSize(800, 600);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        add(chartPanel, BorderLayout.CENTER);
+    }
+}
+    public class InsightsPanel extends JPanel {
+
+    public InsightsPanel(Map<String, Double> completionPercentages,
+                         Map<String, Double> quizAverages) {
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        add(createSectionLabel("Course Completion Percentages"));
+        add(createListPanel(completionPercentages));
+
+        add(Box.createRigidArea(new Dimension(0,20)));
+
+        add(createSectionLabel("Quiz Averages Per Lesson"));
+        add(createListPanel(quizAverages));
+    }
+
+    private JLabel createSectionLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setFont(new Font("Arial", Font.BOLD, 18));
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return label;
+    }
+
+    private JPanel createListPanel(Map<String, Double> map) {
+        JPanel panel = new JPanel(new GridLayout(0,1,5,5));
+        for (var entry : map.entrySet()) {
+            panel.add(new JLabel(entry.getKey() + " → " + String.format("%.1f%%", entry.getValue())));
+        }
+        return panel;
+    }
+}
     private void calculateNextIds() {
         ArrayList<Course> allCourses = courseManagement.getAllCourses();
         for (Course c : allCourses) {
@@ -142,7 +185,14 @@ public class InstructorDashboard extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         tabbedPane = new JTabbedPane();
-        
+        JButton insightsButton = new JButton("View Insights");
+insightsButton.addActionListener(e -> openInsights());
+
+JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+bottomPanel.add(insightsButton); // <-- Add here
+bottomPanel.add(refreshButton);
+bottomPanel.add(logoutButton);
+add(bottomPanel, BorderLayout.SOUTH);
         // Tab 1: My Courses
         JPanel myCoursesPanel = createMyCoursesPanel();
         tabbedPane.addTab("My Courses", myCoursesPanel);
@@ -162,7 +212,7 @@ public class InstructorDashboard extends JFrame {
         add(tabbedPane, BorderLayout.CENTER);
         
         // Bottom panel
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+     //   JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bottomPanel.add(refreshButton);
         bottomPanel.add(logoutButton);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -589,6 +639,30 @@ public class InstructorDashboard extends JFrame {
             new LoginFrame();
         }
     }
+   private void openInsights() {
+    if (selectedCourse == null) {
+        JOptionPane.showMessageDialog(this, "Please select a course first", "Warning", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    Analytics.AnalyticsManager analytics = new Analytics.AnalyticsManager();
+
+    // Get student completion percentages
+    var completion = analytics.calculateCompletionPercentages(selectedCourse);
+
+    // Get quiz averages per lesson
+    Map<String, Double> quizAverages = analytics.calculateQuizAverages(selectedCourse);
+
+    // Pass data to the InsightsPanel
+    InsightsPanel panel = new InsightsPanel(completion, quizAverages);
+
+    // Open chart frame
+    ChartFrame frame = new ChartFrame("Course Insights", panel);
+    frame.setVisible(true);
+}
+
+
+
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Main Method">

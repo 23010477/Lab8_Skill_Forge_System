@@ -1,5 +1,8 @@
+Frontend\InstructorDashboard$InsightsPanel.class
 InstructorManagement\StudentPerformanceAnalytics.class
 CourseManagement\Questions.class
 CourseManagement\Quizzes.class
 Frontend\newinstructordasgboard.class
+Analytics\AnalyticsManager.class
+Frontend\InstructorDashboard$ChartFrame.class
 Frontend\AdminDashboard$1.class

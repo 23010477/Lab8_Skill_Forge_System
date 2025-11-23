@@ -3,6 +3,8 @@ package InstructorManagement;
 import CourseManagement.*;
 import Student.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 public class StudentPerformanceAnalytics {
 
     public void recordQuizResults(Student student,Lesson lesson,Progress progress){
@@ -51,5 +53,42 @@ public class StudentPerformanceAnalytics {
         }
        
     }
-    
+public Map<String, Double> calculateQuizAverages(Course course) {
+    Map<String, Double> averages = new HashMap<>();
+
+    for (Lesson lesson : course.getLessons()) {
+        Quizzes quiz = lesson.getQuiz();
+        if (quiz == null || quiz.getQuestions().isEmpty()) {
+            averages.put(lesson.getTitle(), 0.0);
+            continue;
+        }
+
+        double totalScore = 0;
+        int totalAttempts = 0;
+
+        for (Student student : course.getStudents()) {
+            Progress progress = null;
+            for (Progress p : student.getProgresses()) {
+                if (p.getCourse().equals(course)) {
+                    progress = p;
+                    break;
+                }
+            }
+
+            if (progress != null) {
+                ArrayList<Integer> attempts = progress.getListOfAttempts(lesson.getLessonId());
+                for (int score : attempts) {
+                    totalScore += score;
+                    totalAttempts++;
+                }
+            }
+        }
+
+        double average = totalAttempts > 0 ? (totalScore / totalAttempts) : 0.0;
+        averages.put(lesson.getTitle(), average);
+    }
+
+    return averages;
+}
+
 }
