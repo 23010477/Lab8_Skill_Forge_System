@@ -57,5 +57,47 @@
         "courseId": 4,
         "instructorId": "3",
         "lessons": []
+    },
+    {
+        "description": "1",
+        "students": [],
+        "title": "AAA",
+        "courseId": 5,
+        "instructorId": "0",
+        "lessons": [
+            {
+                "lessonId": 6,
+                "title": "12333",
+                "content": "333"
+            },
+            {
+                "lessonId": 7,
+                "title": "ddd",
+                "content": "a"
+            },
+            {
+                "lessonId": 8,
+                "title": "eeee",
+                "content": "e"
+            },
+            {
+                "lessonId": 9,
+                "title": "aaad",
+                "content": "ad"
+            },
+            {
+                "lessonId": 10,
+                "title": "ad",
+                "content": "fafff"
+            }
+        ]
+    },
+    {
+        "description": "aa",
+        "students": [],
+        "title": "aaa",
+        "courseId": 6,
+        "instructorId": "0",
+        "lessons": []
     }
 ]

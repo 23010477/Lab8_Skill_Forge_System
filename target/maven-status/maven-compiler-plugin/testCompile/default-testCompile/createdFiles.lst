@@ -6,3 +6,4 @@ Frontend\newinstructordasgboard.class
 Analytics\AnalyticsManager.class
 Frontend\InstructorDashboard$ChartFrame.class
 Frontend\AdminDashboard$1.class
+Frontend\QuizzesDashboard.class
