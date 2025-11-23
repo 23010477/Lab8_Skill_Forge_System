@@ -115,4 +115,13 @@ public class Course {
     public ArrayList<Student> getStudents() {
         return students;
     }
+
+    public CourseStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(CourseStatus status) {
+        this.status = status;
+    }
+    
 }

@@ -1,13 +1,15 @@
 
 package InstructorManagement;
 import CourseManagement.*;
-import JsonDBManager.JsonDBManager;
 import Student.*;
 import java.util.ArrayList;
 public class StudentPerformanceAnalytics {
-  private static final String USERS_FILE = "src/test/java/JsonDBManager/users.json";
-    public void recordQuizResults(){
-        //will implement once quiz class is ready
+
+    public void recordQuizResults(Student student,Lesson lesson,Progress progress){
+       int lessonId=lesson.getLessonId(); //we have lesson id
+        Quizzes quiz=lesson.getQuiz();   //we have the quiz of the lesson
+          progress.getListOfAttempts(lessonId);
+        
     }
     public void lessonCompletion(Lesson completedLesson,Progress p){
        try{
@@ -29,8 +31,15 @@ public class StudentPerformanceAnalytics {
 
         
     }
-    public void lessonStatics(){
-       // will implement once quiz class is ready
+    public void lessonStatics(Lesson lesson,Progress p){
+       Quizzes quiz=lesson.getQuiz();
+       ArrayList<Questions> question=new ArrayList<>(quiz.getQuestions());
+       System.out.println("The lesson's Questions are: ");
+       for(Questions q:question){
+           System.out.println(q.getQuestion());
+       }
+       int noOfAttemps=p.getListOfAttempts(lesson.getLessonId()).size();
+       System.out.println("The number of the attemps are: "+ noOfAttemps);
     }
     public void courseStatics(Course c,StudentManagement studentManagement){
         ArrayList<Student> listOfStudents=new ArrayList<>(c.getStudents());

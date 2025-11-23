@@ -338,6 +338,15 @@ public class InstructorDashboard extends JFrame {
                 course.getStudents().size()
             });
         }
+        ArrayList<Student> instructorStudents = currentInstructor.viewAllEnrolledInstructorStudents();
+        for (Student student : instructorStudents) {
+            coursesModel.addRow(new Object[]{
+                student.getUserID(),
+                student.getUsername(),
+                student.getEmail(),
+                student.getProgresses(),
+            });
+        }
         
         // Clear other tables if no course selected
         if (selectedCourse == null) {
@@ -586,9 +595,9 @@ public class InstructorDashboard extends JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new InstructorDashboard().setVisible(true));
-    }
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(() -> new InstructorDashboard().setVisible(true));
+//    }
     // </editor-fold>
 }
 // </editor-fold>

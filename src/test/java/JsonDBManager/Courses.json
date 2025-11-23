@@ -44,5 +44,13 @@
                 "content": "ddddddddddd"
             }
         ]
+    },
+    {
+        "description": "www",
+        "students": [],
+        "title": "prog",
+        "courseId": 4,
+        "instructorId": "3",
+        "lessons": []
     }
 ]
