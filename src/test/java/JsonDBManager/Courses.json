@@ -89,6 +89,31 @@
                 "lessonId": 10,
                 "title": "ad",
                 "content": "fafff"
+            },
+            {
+                "lessonId": 11,
+                "title": "12333",
+                "content": "dddd"
+            },
+            {
+                "lessonId": 12,
+                "title": "qeqwe",
+                "content": "eeeee"
+            },
+            {
+                "lessonId": 13,
+                "title": "ddddd",
+                "content": "wedwd"
+            },
+            {
+                "lessonId": 14,
+                "title": "dddd",
+                "content": "ada"
+            },
+            {
+                "lessonId": 15,
+                "title": "fs",
+                "content": "ffff"
             }
         ]
     },
@@ -97,6 +122,34 @@
         "students": [],
         "title": "aaa",
         "courseId": 6,
+        "instructorId": "0",
+        "lessons": []
+    },
+    {
+        "description": "23",
+        "students": [],
+        "title": "ssss",
+        "courseId": 7,
+        "instructorId": "0",
+        "lessons": [{
+            "lessonId": 16,
+            "title": "fff",
+            "content": "sfff"
+        }]
+    },
+    {
+        "description": "rrr",
+        "students": [],
+        "title": "wer",
+        "courseId": 8,
+        "instructorId": "0",
+        "lessons": []
+    },
+    {
+        "description": "12e",
+        "students": [],
+        "title": "eeee",
+        "courseId": 9,
         "instructorId": "0",
         "lessons": []
     }

@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 public class StudentPerformanceAnalytics {
 
-    public void recordQuizResults(Student student,Lesson lesson,Progress progress){
-       int lessonId=lesson.getLessonId(); //we have lesson id
-        Quizzes quiz=lesson.getQuiz();   //we have the quiz of the lesson
-          progress.getListOfAttempts(lessonId);
-        
+    public void recordQuizResults(Student student, Lesson lesson, Progress progress, int score){
+    if (progress != null && lesson != null) {
+        progress.addAttempt(lesson.getLessonId(), score); 
     }
+}
+
     public void lessonCompletion(Lesson completedLesson,Progress p){
        try{
            p.addCompletedLesson(completedLesson);
