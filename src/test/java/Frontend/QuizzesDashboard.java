@@ -23,44 +23,38 @@ private static final java.util.logging.Logger logger =
     private ArrayList<ButtonGroup> answerGroups = new ArrayList<>();
     private JButton submitButton;
 
-    /**
-     * NetBeans preview constructor (DO NOT DELETE)
-     */
+    
     public QuizzesDashboard() {
         initComponents(); 
     }
 
-    /**
-     * REAL constructor used in your program
-     */
+    
     public QuizzesDashboard(Lesson lesson, Student student, Progress progress) {
         this.lesson = lesson;
         this.student = student;
         this.progress = progress;
 
-        initComponents();   // loads the NetBeans form
+        initComponents();   
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        buildQuizUI();      // builds dynamic quiz UI
+        buildQuizUI();      
     }
 
-    /**
-     * Build the actual quiz UI dynamically
-     */
+    
     private void buildQuizUI() {
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Ensure frame is prepared
+        
         setTitle("Quiz: " + lesson.getTitle());
         setSize(600, 700);
         setLocationRelativeTo(null);
 
-        // Clear auto-generated panel
+        
         getContentPane().removeAll();
 
-        // Lesson content
+       
         JTextArea contentArea = new JTextArea(lesson.getContent());
         contentArea.setEditable(false);
         contentArea.setLineWrap(true);
@@ -126,7 +120,7 @@ private static final java.util.logging.Logger logger =
 
     progress.addAttempt(lesson.getLessonId(), score);
 
-    // Show correct answers
+    
     StringBuilder result = new StringBuilder();
     result.append("Your Score: ").append(score).append("%\n\n");
 
@@ -140,7 +134,7 @@ private static final java.util.logging.Logger logger =
 
     JOptionPane.showMessageDialog(this, result.toString(), "Quiz Results", JOptionPane.INFORMATION_MESSAGE);
 
-    // disable everything
+   
     submitButton.setEnabled(false);
     for (ButtonGroup group : answerGroups) {
         Enumeration<AbstractButton> btns = group.getElements();
@@ -149,10 +143,10 @@ private static final java.util.logging.Logger logger =
         }
     }
 
-    // ✅ Mark lesson as complete
+  
     if (!progress.getCompletedLessons().contains(lesson)) {
-        progress.addCompletedLesson(lesson);         // update progress
-       // lesson.completeLesson(lesson, student);      // update student
+        progress.addCompletedLesson(lesson);         
+            
     }
 }
 

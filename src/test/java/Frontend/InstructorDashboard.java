@@ -147,7 +147,7 @@ public class InstructorDashboard extends JFrame {
         });
     }
 
-    // ------------------- Panels -------------------
+   
     private JPanel createMyCoursesPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         JLabel titleLabel = new JLabel("My Created Courses");
@@ -197,19 +197,19 @@ public class InstructorDashboard extends JFrame {
     private JPanel createLessonManagementPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        // Course description
+        
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(new JLabel("Selected Course Description:"), BorderLayout.NORTH);
         topPanel.add(new JScrollPane(courseDescriptionArea), BorderLayout.CENTER);
         panel.add(topPanel, BorderLayout.NORTH);
 
-        // Lessons list
+        
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(new JLabel("Lessons:"), BorderLayout.NORTH);
         centerPanel.add(new JScrollPane(lessonsTable), BorderLayout.CENTER);
         panel.add(centerPanel, BorderLayout.CENTER);
 
-        // Bottom: add/delete lesson + take quiz + content
+       
         JPanel bottomPanel = new JPanel(new BorderLayout());
 
         JPanel inputPanel = new JPanel(new GridBagLayout());
@@ -267,7 +267,7 @@ public class InstructorDashboard extends JFrame {
         return panel;
     }
 
-    // ------------------- Data & Event Methods -------------------
+  
     private void loadCourses() {
         if (currentInstructor == null) return;
 
@@ -374,7 +374,7 @@ public class InstructorDashboard extends JFrame {
         return null;
     }
 
-    // ------------------- CRUD Methods -------------------
+    
     private void handleCreateCourse() {
         String title = courseTitleField.getText().trim();
         String description = courseDescriptionField.getText().trim();
@@ -421,7 +421,7 @@ public class InstructorDashboard extends JFrame {
         lessonTitleField.setText("");
         lessonContentField.setText("");
 
-        // Refresh only lessons table
+       
         updateSelectedCourse();
     }
 
@@ -475,7 +475,7 @@ public class InstructorDashboard extends JFrame {
         frame.setVisible(true);
     }
 
-    // ------------------- Inner Classes -------------------
+    
     public class ChartFrame extends JFrame {
         public ChartFrame(String title, JPanel chartPanel) {
             setTitle(title);

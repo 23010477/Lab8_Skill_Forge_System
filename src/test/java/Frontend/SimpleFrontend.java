@@ -49,7 +49,7 @@ public class SimpleFrontend {
 
         JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
-        // Left: Students
+        
         JPanel left = new JPanel(new BorderLayout(6, 6));
         left.add(new JLabel("Students"), BorderLayout.NORTH);
         studentListModel = new DefaultListModel<>();
@@ -72,7 +72,7 @@ public class SimpleFrontend {
         leftButtons.add(refreshStudentsBtn);
         left.add(leftButtons, BorderLayout.SOUTH);
 
-        // Right: Courses
+      
         JPanel right = new JPanel(new BorderLayout(6, 6));
         right.add(new JLabel("Courses"), BorderLayout.NORTH);
         courseListModel = new DefaultListModel<>();
@@ -185,7 +185,7 @@ public class SimpleFrontend {
             return sb.toString();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return pw; // fallback (not ideal)
+            return pw; 
         }
     }
     // </editor-fold>
