@@ -45,7 +45,40 @@ public class JsonDBManager {
                         int lessonId = lo.optInt("lessonId", 0);
                         String ltitle = lo.optString("title", "");
                         String lcontent = lo.optString("content", "");
-                        c.addLesson(new Lesson(lessonId, ltitle, lcontent));
+                        Lesson lesson = new Lesson(lessonId, ltitle, lcontent);
+                        
+                        // Load quiz if present
+                        if (lo.has("quiz")) {
+                            JSONObject quizObj = lo.getJSONObject("quiz");
+                            if (quizObj.has("questions")) {
+                                CourseManagement.Quizzes quiz = new CourseManagement.Quizzes();
+                                JSONArray questions = quizObj.getJSONArray("questions");
+                                for (int k = 0; k < questions.length(); k++) {
+                                    JSONObject qObj = questions.getJSONObject(k);
+                                    String questionText = qObj.optString("question", "");
+                                    int correctIndex = qObj.optInt("indexOfCorrectOption", 0);
+                                    JSONArray options = qObj.getJSONArray("mcqOptions");
+                                    ArrayList<String> mcqOptions = new ArrayList<>();
+                                    for (int m = 0; m < options.length(); m++) {
+                                        mcqOptions.add(options.getString(m));
+                                    }
+                                    CourseManagement.Questions question = new CourseManagement.Questions(questionText, mcqOptions, correctIndex);
+                                    quiz.addQuestion(question);
+                                }
+                                lesson.setQuiz(quiz);
+                            }
+                        }
+                        c.addLesson(lesson);
+                    }
+                }
+                
+                // Load course status
+                if (o.has("status")) {
+                    String statusStr = o.optString("status", "PENDING");
+                    try {
+                        c.setStatus(CourseManagement.CourseStatus.valueOf(statusStr));
+                    } catch (IllegalArgumentException e) {
+                        c.setStatus(CourseManagement.CourseStatus.PENDING);
                     }
                 }
 
@@ -102,9 +135,32 @@ public class JsonDBManager {
                 lo.put("lessonId", l.getLessonId());
                 lo.put("title", l.getTitle());
                 lo.put("content", l.getContent());
+                
+                // Save quiz if present
+                if (l.getQuiz() != null && l.getQuiz().getQuestions() != null && !l.getQuiz().getQuestions().isEmpty()) {
+                    JSONObject quizObj = new JSONObject();
+                    JSONArray questions = new JSONArray();
+                    for (CourseManagement.Questions q : l.getQuiz().getQuestions()) {
+                        JSONObject qObj = new JSONObject();
+                        qObj.put("question", q.getQuestion());
+                        qObj.put("indexOfCorrectOption", q.getIndexOfCorrectOption());
+                        JSONArray mcqOptions = new JSONArray();
+                        for (String option : q.getMcqOptions()) {
+                            mcqOptions.put(option);
+                        }
+                        qObj.put("mcqOptions", mcqOptions);
+                        questions.put(qObj);
+                    }
+                    quizObj.put("questions", questions);
+                    lo.put("quiz", quizObj);
+                }
+                
                 lessons.put(lo);
             }
             o.put("lessons", lessons);
+            
+            // Save course status
+            o.put("status", c.getStatus().toString());
 
             JSONArray studs = new JSONArray();
             for (Student s : c.getStudents()) {
@@ -162,17 +218,35 @@ public class JsonDBManager {
                     String hashedPass = o.optString("hashedPass", null);
                     Student s = new Student(userID, user, email, hashedPass);
 
-                    // Read enrolled courses
+                    // Read enrolled courses - load full course data from Courses.json
                     if (o.has("enrolledCourses")) {
                         JSONArray enrolledCourses = o.getJSONArray("enrolledCourses");
+                        // Load all courses to get full data
+                        ArrayList<Course> allCourses = readCourses("src/test/java/JsonDBManager/Courses.json");
                         for (int j = 0; j < enrolledCourses.length(); j++) {
                             JSONObject courseObj = enrolledCourses.getJSONObject(j);
                             int courseId = courseObj.optInt("courseId", 0);
-                            String title = courseObj.optString("title", "");
-                            String description = courseObj.optString("description", "");
-                            String instructorId = courseObj.optString("instructorId", "");
-                            Course course = new Course(courseId, title, description, instructorId);
-                            s.getEnrolledCourses().add(course);
+                            
+                            // Find the full course data from all courses
+                            Course fullCourse = null;
+                            for (Course c : allCourses) {
+                                if (c.getCourseId() == courseId) {
+                                    fullCourse = c;
+                                    break;
+                                }
+                            }
+                            
+                            // If full course found, use it; otherwise create basic course
+                            if (fullCourse != null) {
+                                s.getEnrolledCourses().add(fullCourse);
+                            } else {
+                                // Fallback: create course with basic info
+                                String title = courseObj.optString("title", "");
+                                String description = courseObj.optString("description", "");
+                                String instructorId = courseObj.optString("instructorId", "");
+                                Course course = new Course(courseId, title, description, instructorId);
+                                s.getEnrolledCourses().add(course);
+                            }
                         }
                     }
 
@@ -203,6 +277,61 @@ public class JsonDBManager {
                                         Lesson lesson = course.findLessonById(lessonId);
                                         if (lesson != null) {
                                             progress.getCompletedLessons().add(lesson);
+                                        }
+                                    }
+                                }
+                                
+                                // Read quiz attempts
+                                if (progressObj.has("quizAttempts")) {
+                                    JSONObject attemptsObj = progressObj.getJSONObject("quizAttempts");
+                                    // Use reflection to directly set quizAttempts to avoid duplicate lesson completions
+                                    try {
+                                        java.lang.reflect.Field field = CourseManagement.Progress.class.getDeclaredField("quizAttempts");
+                                        field.setAccessible(true);
+                                        @SuppressWarnings("unchecked")
+                                        java.util.HashMap<Integer, ArrayList<Integer>> quizAttempts = 
+                                            (java.util.HashMap<Integer, ArrayList<Integer>>) field.get(progress);
+                                        
+                                        for (String key : attemptsObj.keySet()) {
+                                            try {
+                                                int lessonId = Integer.parseInt(key);
+                                                JSONArray attempts = attemptsObj.getJSONArray(key);
+                                                ArrayList<Integer> attemptList = new ArrayList<>();
+                                                for (int k = 0; k < attempts.length(); k++) {
+                                                    attemptList.add(attempts.getInt(k));
+                                                }
+                                                quizAttempts.put(lessonId, attemptList);
+                                                
+                                                // Now properly mark lesson as complete if score >= 50
+                                                Lesson lesson = course.findLessonById(lessonId);
+                                                if (lesson != null) {
+                                                    for (Integer score : attemptList) {
+                                                        if (score >= 50) {
+                                                            // Lesson passed, add to completed if not already there
+                                                            if (!progress.getCompletedLessons().contains(lesson)) {
+                                                                progress.getCompletedLessons().add(lesson);
+                                                            }
+                                                            break; // Only need one passing score
+                                                        }
+                                                    }
+                                                }
+                                            } catch (NumberFormatException e) {
+                                                // Skip invalid keys
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        // If reflection fails, fall back to addAttempt method
+                                        e.printStackTrace();
+                                        for (String key : attemptsObj.keySet()) {
+                                            try {
+                                                int lessonId = Integer.parseInt(key);
+                                                JSONArray attempts = attemptsObj.getJSONArray(key);
+                                                for (int k = 0; k < attempts.length(); k++) {
+                                                    progress.addAttempt(lessonId, attempts.getInt(k));
+                                                }
+                                            } catch (NumberFormatException ex) {
+                                                // Skip invalid keys
+                                            }
                                         }
                                     }
                                 }
@@ -273,6 +402,30 @@ public class JsonDBManager {
                     completedLessons.put(l.getLessonId());
                 }
                 progressObj.put("completedLessons", completedLessons);
+                
+                // Add quiz attempts - need to access the quizAttempts HashMap
+                // Using reflection to access private field
+                try {
+                    java.lang.reflect.Field field = CourseManagement.Progress.class.getDeclaredField("quizAttempts");
+                    field.setAccessible(true);
+                    @SuppressWarnings("unchecked")
+                    java.util.HashMap<Integer, ArrayList<Integer>> quizAttempts = 
+                        (java.util.HashMap<Integer, ArrayList<Integer>>) field.get(p);
+                    if (quizAttempts != null && !quizAttempts.isEmpty()) {
+                        JSONObject attemptsObj = new JSONObject();
+                        for (java.util.Map.Entry<Integer, ArrayList<Integer>> entry : quizAttempts.entrySet()) {
+                            JSONArray attempts = new JSONArray();
+                            for (Integer score : entry.getValue()) {
+                                attempts.put(score);
+                            }
+                            attemptsObj.put(String.valueOf(entry.getKey()), attempts);
+                        }
+                        progressObj.put("quizAttempts", attemptsObj);
+                    }
+                } catch (Exception e) {
+                    // If reflection fails, skip quiz attempts
+                    e.printStackTrace();
+                }
 
                 progresses.put(progressObj);
             }
@@ -395,6 +548,30 @@ public class JsonDBManager {
                     completedLessons.put(l.getLessonId());
                 }
                 progressObj.put("completedLessons", completedLessons);
+                
+                // Add quiz attempts - need to access the quizAttempts HashMap
+                // Using reflection to access private field
+                try {
+                    java.lang.reflect.Field field = CourseManagement.Progress.class.getDeclaredField("quizAttempts");
+                    field.setAccessible(true);
+                    @SuppressWarnings("unchecked")
+                    java.util.HashMap<Integer, ArrayList<Integer>> quizAttempts = 
+                        (java.util.HashMap<Integer, ArrayList<Integer>>) field.get(p);
+                    if (quizAttempts != null && !quizAttempts.isEmpty()) {
+                        JSONObject attemptsObj = new JSONObject();
+                        for (java.util.Map.Entry<Integer, ArrayList<Integer>> entry : quizAttempts.entrySet()) {
+                            JSONArray attempts = new JSONArray();
+                            for (Integer score : entry.getValue()) {
+                                attempts.put(score);
+                            }
+                            attemptsObj.put(String.valueOf(entry.getKey()), attempts);
+                        }
+                        progressObj.put("quizAttempts", attemptsObj);
+                    }
+                } catch (Exception e) {
+                    // If reflection fails, skip quiz attempts
+                    e.printStackTrace();
+                }
 
                 progresses.put(progressObj);
             }
