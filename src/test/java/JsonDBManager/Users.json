@@ -1,5 +1,29 @@
 [
     {
+        "certificates": [],
+        "progresses": [
+            {
+                "completedLessons": [
+                    1,
+                    2
+                ],
+                "percentage": 0,
+                "completed": false,
+                "courseId": 1
+            },
+            {
+                "completedLessons": [],
+                "percentage": 0,
+                "completed": false,
+                "courseId": 1
+            }
+        ],
+        "enrolledCourses": [{
+            "description": "fwshtjulo;poiuytrew2345uiop;l,mnbvcxzasdfghjkl;",
+            "title": "course1",
+            "courseId": 1,
+            "instructorId": "1"
+        }],
         "type": "student",
         "userID": 1,
         "hashedPass": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
@@ -7,6 +31,9 @@
         "username": "saif"
     },
     {
+        "certificates": [],
+        "progresses": [],
+        "enrolledCourses": [],
         "type": "student",
         "userID": 2,
         "hashedPass": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
@@ -14,6 +41,9 @@
         "username": "ak"
     },
     {
+        "certificates": [],
+        "progresses": [],
+        "enrolledCourses": [],
         "type": "student",
         "userID": 3,
         "hashedPass": "9b56ca8566a48b98a8c29a7fd307038ed555123439a937eb85d9c45166881e6e",

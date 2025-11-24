@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 // <editor-fold defaultstate="collapsed" desc="StudentDashboard Class">
 /**
@@ -27,7 +28,7 @@ public class StudentDashboard extends JFrame {
     private JTextArea courseDescriptionArea, lessonContentArea;
     private JLabel progressLabel;
     private JButton enrollButton, unenrollButton, viewLessonsButton, completeLessonButton, refreshButton, logoutButton;
-    private JButton takeQuizButton; // <-- new button
+    private JButton takeQuizButton;
     private JTabbedPane tabbedPane;
     private Course currentViewedCourse; // Track the course currently being viewed in Course Details tab
     // </editor-fold>
@@ -70,18 +71,23 @@ public class StudentDashboard extends JFrame {
 
         availableModel = new DefaultTableModel(new Object[] { "Course ID", "Title", "Description", "Instructor" }, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) { return false; }
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         };
 
         lessonsModel = new DefaultTableModel(new Object[] { "Lesson ID", "Title", "Status" }, 0) {
-
             @Override
-            public boolean isCellEditable(int row, int column) { return false; }
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         };
 
         certificatesModel = new DefaultTableModel(new Object[] { "Certificate ID", "Course", "Date Earned" }, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) { return false; }
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         };
 
         enrolledCoursesTable = new JTable(enrolledModel);
@@ -107,8 +113,8 @@ public class StudentDashboard extends JFrame {
         completeLessonButton = new JButton("Mark Lesson Complete");
         refreshButton = new JButton("Refresh");
         logoutButton = new JButton("Logout");
-        
-        takeQuizButton = new JButton("Take Quiz"); // <-- new button
+
+        takeQuizButton = new JButton("Take Quiz");
     }
     // </editor-fold>
 
@@ -150,16 +156,18 @@ public class StudentDashboard extends JFrame {
         unenrollButton.addActionListener(e -> handleUnenroll());
         viewLessonsButton.addActionListener(e -> handleViewLessons());
         completeLessonButton.addActionListener(e -> handleCompleteLesson());
-        takeQuizButton.addActionListener(e -> handleTakeQuiz()); // <-- new listener
+        takeQuizButton.addActionListener(e -> handleTakeQuiz());
         refreshButton.addActionListener(e -> loadData());
         logoutButton.addActionListener(e -> handleLogout());
 
         enrolledCoursesTable.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) updateCourseDescription();
+            if (!e.getValueIsAdjusting())
+                updateCourseDescription();
         });
 
         availableCoursesTable.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) updateAvailableCourseDescription();
+            if (!e.getValueIsAdjusting())
+                updateAvailableCourseDescription();
         });
 
         lessonsTable.getSelectionModel().addListSelectionListener(e -> {
@@ -169,7 +177,6 @@ public class StudentDashboard extends JFrame {
             }
         });
     }
-
 
     private JPanel createMyCoursesPanel() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -242,7 +249,7 @@ public class StudentDashboard extends JFrame {
         JPanel progressPanel = new JPanel(new FlowLayout());
         progressPanel.add(progressLabel);
         progressPanel.add(completeLessonButton);
-        progressPanel.add(takeQuizButton); // <-- new button
+        progressPanel.add(takeQuizButton);
         bottomPanel.add(progressPanel, BorderLayout.SOUTH);
 
         panel.add(bottomPanel, BorderLayout.SOUTH);
@@ -274,17 +281,7 @@ public class StudentDashboard extends JFrame {
                     String.format("%.1f%%", progress)
             });
         }
-        // load lessons for each course
-        for (Course course : currentStudent.getEnrolledCourses()) {
-            lessonsModel.setRowCount(0);
-            for (Lesson lesson : course.getLessons()) {
-                lessonsModel.addRow(new Object[] {
-                        lesson.getLessonId(),
-                        lesson.getTitle(),
-                        lesson.getContent()
-                });
-            }
-        }
+
         // Load available courses (not enrolled)
         availableModel.setRowCount(0);
         for (Course course : courseManagement.getAllCourses()) {
@@ -311,9 +308,19 @@ public class StudentDashboard extends JFrame {
 
     private double getCourseProgress(Course course) {
         for (Progress progress : currentStudent.getProgresses()) {
-            if (progress.getCourse().equals(course)) return progress.getPercentage();
+            if (progress.getCourse().equals(course))
+                return progress.getPercentage();
         }
         return 0.0;
+    }
+
+    private Progress getProgressForCourse(Course course) {
+        for (Progress progress : currentStudent.getProgresses()) {
+            if (progress.getCourse().getCourseId() == course.getCourseId()) {
+                return progress;
+            }
+        }
+        return null;
     }
     // </editor-fold>
 
@@ -376,6 +383,7 @@ public class StudentDashboard extends JFrame {
             lessonsModel.setRowCount(0);
             lessonContentArea.setText("");
             progressLabel.setText("Progress: 0%");
+            currentViewedCourse = null;
         }
     }
 
@@ -427,20 +435,14 @@ public class StudentDashboard extends JFrame {
         } else {
             progressLabel.setText("Progress: 0%");
         }
-    }
 
-    private Progress getProgressForCourse(Course course) {
-        for (Progress progress : currentStudent.getProgresses()) {
-            if (progress.getCourse().equals(course)) {
-                return progress;
-            }
-        }
-        return null;
+        // Enable/disable buttons based on selection
+        enableQuizButton();
     }
 
     private void updateCourseDescription() {
         int selectedRow = enrolledCoursesTable.getSelectedRow();
-        if (selectedRow != -1) {
+        if (selectedRow != -1 && selectedRow < enrolledModel.getRowCount()) {
             int courseId = (Integer) enrolledModel.getValueAt(selectedRow, 0);
             Course course = courseManagement.findCourse(courseId);
             if (course != null) {
@@ -451,7 +453,7 @@ public class StudentDashboard extends JFrame {
 
     private void updateAvailableCourseDescription() {
         int selectedRow = availableCoursesTable.getSelectedRow();
-        if (selectedRow != -1) {
+        if (selectedRow != -1 && selectedRow < availableModel.getRowCount()) {
             int courseId = (Integer) availableModel.getValueAt(selectedRow, 0);
             Course course = courseManagement.findCourse(courseId);
             if (course != null) {
@@ -462,7 +464,7 @@ public class StudentDashboard extends JFrame {
 
     private void updateLessonContent() {
         int selectedRow = lessonsTable.getSelectedRow();
-        if (selectedRow != -1) {
+        if (selectedRow != -1 && selectedRow < lessonsModel.getRowCount()) {
             int lessonId = (Integer) lessonsModel.getValueAt(selectedRow, 0);
 
             // Use the currently viewed course instead of checking table selection
@@ -484,36 +486,47 @@ public class StudentDashboard extends JFrame {
             return;
         }
 
-        // Use the currently viewed course instead of checking table selection
+        // Use currentViewedCourse which has lessons loaded from "View Lessons"
         if (currentViewedCourse == null) {
-            JOptionPane.showMessageDialog(this, "Please view a course's lessons first", "Warning",
+            JOptionPane.showMessageDialog(this, "Please click 'View Lessons' first to see the course lessons",
+                    "Warning",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         Course course = currentViewedCourse;
-
         int lessonId = (Integer) lessonsModel.getValueAt(selectedRow, 0);
         Lesson lesson = course.findLesson(lessonId);
-        if (lesson == null)
-            return;
-
-        Progress progress = getProgressForCourse(course);
-        if (progress == null) {
-            JOptionPane.showMessageDialog(this, "Progress not found", "Error", JOptionPane.ERROR_MESSAGE);
+        
+        if (lesson == null) {
+            JOptionPane.showMessageDialog(this, "Lesson not found", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
+        // Get or create progress for the course
+        Progress progress = getProgressForCourse(course);
+        if (progress == null) {
+            // Create new progress if it doesn't exist
+            progress = new Progress(currentStudent , course);
+            currentStudent.getProgresses().add(progress);
+        }
+
+        // Check if lesson is already completed
         if (progress.getCompletedLessons().contains(lesson)) {
             JOptionPane.showMessageDialog(this, "Lesson already completed", "Info", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
+        // Mark lesson as complete
         progress.addCompletedLesson(lesson);
+        
+        // Update the course completion status
         course.completeLesson(lesson, currentStudent);
+        
+        // Save the changes
         studentManagement.saveStudents();
 
-        // Check for certificate
+        // Check for certificate eligibility
         if (progress.getPercentage() >= 100.0) {
             boolean hasCertificate = false;
             for (Certificate c : currentStudent.getCertificates()) {
@@ -536,9 +549,9 @@ public class StudentDashboard extends JFrame {
 
         JOptionPane.showMessageDialog(this, "Lesson marked as complete!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
-        // Refresh lessons table
-        handleViewLessons();
-        loadData();
+        // Refresh the display
+        handleViewLessons(); // Refresh the lessons table to show updated status
+        loadData(); // Refresh all data
     }
 
     private void handleTakeQuiz() {
@@ -549,16 +562,19 @@ public class StudentDashboard extends JFrame {
             return;
         }
 
+        // Use currentViewedCourse which has lessons loaded from "View Lessons"
         if (currentViewedCourse == null) {
-            JOptionPane.showMessageDialog(this, "Please view a course's lessons first", "Warning",
+            JOptionPane.showMessageDialog(this, "Please click 'View Lessons' first to see the course lessons",
+                    "Warning",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         Course course = currentViewedCourse;
+
         int lessonId = (Integer) lessonsModel.getValueAt(selectedRow, 0);
         Lesson lesson = course.findLesson(lessonId);
-        
+
         if (lesson == null) {
             JOptionPane.showMessageDialog(this, "Lesson not found", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -583,6 +599,7 @@ public class StudentDashboard extends JFrame {
         int selectedRow = lessonsTable.getSelectedRow();
         boolean enabled = selectedRow != -1 && currentViewedCourse != null;
         takeQuizButton.setEnabled(enabled);
+        completeLessonButton.setEnabled(enabled);
     }
 
     private void handleLogout() {
@@ -594,6 +611,16 @@ public class StudentDashboard extends JFrame {
             dispose();
             new LoginFrame();
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        StudentDashboard that = (StudentDashboard) obj;
+        return Objects.equals(currentStudent, that.currentStudent);
     }
     // </editor-fold>
 

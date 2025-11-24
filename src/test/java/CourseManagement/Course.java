@@ -59,7 +59,7 @@ public class Course {
     public CourseStatus getStatus() {
         return status;
     }
-    
+
     public void setStatus(CourseStatus status) {
         this.status = status;
     }
@@ -90,7 +90,7 @@ public class Course {
         }
         return null;
     }
-    
+
     public void updateLesson(int lessonId, String newTitle, String newContent) {
         Lesson lesson = findLesson(lessonId);
         if (lesson != null) {
@@ -101,25 +101,25 @@ public class Course {
 
     public void completeLesson(Lesson lesson, Student student) {
         Progress stdProgress = null;
-        for( Progress p : student.getProgresses()){
-            if(p.getCourse().equals(this)){
+        for (Progress p : student.getProgresses()) {
+            if (p.getCourse().equals(this)) {
                 stdProgress = p;
                 break;
             }
         }
-        if (stdProgress != null ){
+        if (stdProgress != null) {
             stdProgress.addCompletedLesson(lesson);
         }
     }
 
-    public Lesson findLessonById(int lessonId){
-        for (Lesson l : lessons){
+    public Lesson findLessonById(int lessonId) {
+        for (Lesson l : lessons) {
             if (l.getLessonId() == lessonId)
                 return l;
         }
         return null;
     }
-    
+
     public ArrayList<Student> getStudents() {
         return students;
     }
