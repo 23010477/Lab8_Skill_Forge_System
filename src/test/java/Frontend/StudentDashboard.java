@@ -1,6 +1,7 @@
 package Frontend;
 
 import CourseManagement.Course;
+import CourseManagement.*;
 import CourseManagement.CourseManagementSystem;
 import CourseManagement.Lesson;
 import CourseManagement.Progress;
@@ -279,44 +280,59 @@ public class StudentDashboard extends JFrame {
             lessonContentArea.setText("");
             progressLabel.setText("Progress: 0%");
         }}
-    private void handleViewLessons() {   int selectedRow = enrolledCoursesTable.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a course to view lessons", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        
-        int courseId = (Integer) enrolledModel.getValueAt(selectedRow, 0);
-        Course course = courseManagement.findCourse(courseId);
-        
-        if (course == null) return;
-        
-        // Switch to course details tab
-        tabbedPane.setSelectedIndex(2);
-        
-        // Load course details
-        courseDescriptionArea.setText(course.getDescription());
-        
-        // Load lessons
-        lessonsModel.setRowCount(0);
-        Progress progress = getProgressForCourse(course);
-        ArrayList<Lesson> completedLessons = progress != null ? progress.getCompletedLessons() : new ArrayList<>();
-        
-        for (Lesson lesson : course.getLessons()) {
-            String status = completedLessons.contains(lesson) ? "Completed" : "Not Completed";
-            lessonsModel.addRow(new Object[]{
-                lesson.getLessonId(),
-                lesson.getTitle(),
-                status
-            });
-        }
-        
-        // Update progress
-        if (progress != null) {
-            progressLabel.setText(String.format("Progress: %.1f%%", progress.getPercentage()));
-        } else {
-            progressLabel.setText("Progress: 0%");
-        }
+    private void handleViewLessons() {
+    int selectedRow = enrolledCoursesTable.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Please select a course to view lessons", "Warning", JOptionPane.WARNING_MESSAGE);
+        return;
     }
+
+    int courseId = (Integer) enrolledModel.getValueAt(selectedRow, 0);
+    Course course = courseManagement.findCourse(courseId);
+    if (course == null) return;
+
+    // Switch to course details tab
+    tabbedPane.setSelectedIndex(2);
+
+    // Load course description
+    courseDescriptionArea.setText(course.getDescription());
+
+    // Load lessons
+    lessonsModel.setRowCount(0);
+    Progress progress = getProgressForCourse(course);
+    ArrayList<Lesson> completedLessons = progress != null ? progress.getCompletedLessons() : new ArrayList<>();
+
+    for (Lesson lesson : course.getLessons()) {
+        String status = completedLessons.contains(lesson) ? "Completed" : "Not Completed";
+        lessonsModel.addRow(new Object[]{
+            lesson.getLessonId(),
+            lesson.getTitle(),
+            status
+        });
+    }
+    // Ensure every lesson has a quiz (for testing purposes)
+for (Lesson lesson : course.getLessons()) {
+    if (lesson.getQuiz() == null) {
+        Quizzes quiz = new Quizzes();
+        ArrayList<String> options = new ArrayList<>();
+        options.add("Option 1");
+        options.add("Option 2");
+        options.add("Option 3");
+        Questions q = new Questions("Sample question?", options, 0); // correct answer index 0
+        quiz.addQuestion(q);
+        lesson.setQuiz(quiz);
+    }
+}
+
+
+    // Update progress
+    progressLabel.setText(progress != null ? 
+        String.format("Progress: %.1f%%", progress.getPercentage()) : "Progress: 0%");
+
+    // ✅ Update quiz button after loading lessons
+    enableQuizButton();
+}
+
     
     private Progress getProgressForCourse(Course course) {
         for (Progress progress : currentStudent.getProgresses()) {
@@ -400,29 +416,32 @@ public class StudentDashboard extends JFrame {
     }
 
     private void enableQuizButton() {
-        int selectedRow = lessonsTable.getSelectedRow();
-        if (selectedRow == -1) {
-            takeQuizButton.setEnabled(false);
-            return;
-        }
-
-        int courseRow = enrolledCoursesTable.getSelectedRow();
-        if (courseRow == -1) {
-            takeQuizButton.setEnabled(false);
-            return;
-        }
-
-        int courseId = (Integer) enrolledModel.getValueAt(courseRow, 0);
-        Course course = courseManagement.findCourse(courseId);
-        if (course == null) {
-            takeQuizButton.setEnabled(false);
-            return;
-        }
-
-        int lessonId = (Integer) lessonsModel.getValueAt(selectedRow, 0);
-        Lesson lesson = course.findLesson(lessonId);
-        takeQuizButton.setEnabled(lesson != null && lesson.getQuiz() != null && !lesson.getQuiz().getQuestions().isEmpty());
+    int selectedRow = lessonsTable.getSelectedRow();
+    if (selectedRow == -1) {
+        takeQuizButton.setEnabled(false);
+        return;
     }
+
+    int courseRow = enrolledCoursesTable.getSelectedRow();
+    if (courseRow == -1) {
+        takeQuizButton.setEnabled(false);
+        return;
+    }
+
+    int courseId = (Integer) enrolledModel.getValueAt(courseRow, 0);
+    Course course = courseManagement.findCourse(courseId);
+    if (course == null) {
+        takeQuizButton.setEnabled(false);
+        return;
+    }
+
+    int lessonId = (Integer) lessonsModel.getValueAt(selectedRow, 0);
+    Lesson lesson = course.findLesson(lessonId);
+
+    // ✅ Enable only if the lesson exists and has a quiz with questions
+    takeQuizButton.setEnabled(lesson != null && lesson.getQuiz() != null && !lesson.getQuiz().getQuestions().isEmpty());
+}
+
 
    /* private Progress getProgressForCourse(Course course) {
         for (Progress progress : currentStudent.getProgresses()) {

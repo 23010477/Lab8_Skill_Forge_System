@@ -39,6 +39,7 @@ private static final java.util.logging.Logger logger =
         this.progress = progress;
 
         initComponents();   // loads the NetBeans form
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         buildQuizUI();      // builds dynamic quiz UI
     }
 
@@ -107,48 +108,54 @@ private static final java.util.logging.Logger logger =
 
     private void handleSubmit(ActionEvent e) {
 
-        Quizzes quiz = lesson.getQuiz();
-        ArrayList<Questions> questions = quiz.getQuestions();
-        int score = 0;
+    Quizzes quiz = lesson.getQuiz();
+    ArrayList<Questions> questions = quiz.getQuestions();
+    int score = 0;
 
-        for (int i = 0; i < questions.size(); i++) {
-            Questions q = questions.get(i);
-            ButtonGroup group = answerGroups.get(i);
+    for (int i = 0; i < questions.size(); i++) {
+        Questions q = questions.get(i);
+        ButtonGroup group = answerGroups.get(i);
 
-            if (group.getSelection() != null) {
-                int selected = Integer.parseInt(group.getSelection().getActionCommand());
-                if (q.checkAns(selected)) {
-                    score += 100 / questions.size();
-                }
-            }
-        }
-
-        progress.addAttempt(lesson.getLessonId(), score);
-
-        // Show correct answers
-        StringBuilder result = new StringBuilder();
-        result.append("Your Score: ").append(score).append("%\n\n");
-
-        for (int i = 0; i < questions.size(); i++) {
-            Questions q = questions.get(i);
-            result.append((i + 1)).append(". ").append(q.getQuestion())
-                    .append("\nCorrect: ")
-                    .append(q.getMcqOptions().get(q.getIndexOfCorrectOption()))
-                    .append("\n\n");
-        }
-
-        JOptionPane.showMessageDialog(this, result.toString(), "Quiz Results", JOptionPane.INFORMATION_MESSAGE);
-
-        // disable everything
-        submitButton.setEnabled(false);
-
-        for (ButtonGroup group : answerGroups) {
-            Enumeration<AbstractButton> btns = group.getElements();
-            while (btns.hasMoreElements()) {
-                btns.nextElement().setEnabled(false);
+        if (group.getSelection() != null) {
+            int selected = Integer.parseInt(group.getSelection().getActionCommand());
+            if (q.checkAns(selected)) {
+                score += 100 / questions.size();
             }
         }
     }
+
+    progress.addAttempt(lesson.getLessonId(), score);
+
+    // Show correct answers
+    StringBuilder result = new StringBuilder();
+    result.append("Your Score: ").append(score).append("%\n\n");
+
+    for (int i = 0; i < questions.size(); i++) {
+        Questions q = questions.get(i);
+        result.append((i + 1)).append(". ").append(q.getQuestion())
+                .append("\nCorrect: ")
+                .append(q.getMcqOptions().get(q.getIndexOfCorrectOption()))
+                .append("\n\n");
+    }
+
+    JOptionPane.showMessageDialog(this, result.toString(), "Quiz Results", JOptionPane.INFORMATION_MESSAGE);
+
+    // disable everything
+    submitButton.setEnabled(false);
+    for (ButtonGroup group : answerGroups) {
+        Enumeration<AbstractButton> btns = group.getElements();
+        while (btns.hasMoreElements()) {
+            btns.nextElement().setEnabled(false);
+        }
+    }
+
+    // ✅ Mark lesson as complete
+    if (!progress.getCompletedLessons().contains(lesson)) {
+        progress.addCompletedLesson(lesson);         // update progress
+       // lesson.completeLesson(lesson, student);      // update student
+    }
+}
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
