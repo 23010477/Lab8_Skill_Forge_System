@@ -184,8 +184,7 @@ public class LoginFrame extends JFrame {
                     } else if (selectedRole == Role.INSTRUCTOR && instructor != null) {
                         new InstructorDashboard(instructor).setVisible(true);
                     } else if (selectedRole == Role.ADMIN) {
-                        // TODO: Create AdminDashboard if needed
-                        JOptionPane.showMessageDialog(null, "Admin Dashboard - Coming Soon", "Admin", JOptionPane.INFORMATION_MESSAGE);
+                        new AdminDashboard().setVisible(true);
                     }
             // // Open appropriate dashboard based on role
             // Timer timer = new Timer(1000, new ActionListener() {

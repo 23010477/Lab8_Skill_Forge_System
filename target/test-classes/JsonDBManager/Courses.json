@@ -15,8 +15,14 @@
                 "lessonId": 2,
                 "title": "lesson2",
                 "content": "wefrgw4r2"
+            },
+            {
+                "lessonId": 8,
+                "title": "lesson 3",
+                "content": "asdfghjkl"
             }
-        ]
+        ],
+        "status": "APPROVED"
     },
     {
         "description": "aa",
@@ -24,7 +30,8 @@
         "title": "aa",
         "courseId": 2,
         "instructorId": "2",
-        "lessons": []
+        "lessons": [],
+        "status": "APPROVED"
     },
     {
         "description": "ddddd",
@@ -48,7 +55,8 @@
                 "title": "lesson1",
                 "content": "info"
             }
-        ]
+        ],
+        "status": "PENDING"
     },
     {
         "description": "asdfghjkl;qwertyuiopzxcvbnm,.",
@@ -60,7 +68,8 @@
             "lessonId": 5,
             "title": "lesson1",
             "content": "hi hdqwaihdiwf"
-        }]
+        }],
+        "status": "PENDING"
     },
     {
         "description": "sdfgm,",
@@ -79,6 +88,7 @@
                 "title": "two",
                 "content": "wfwrgwgbfv"
             }
-        ]
+        ],
+        "status": "PENDING"
     }
 ]

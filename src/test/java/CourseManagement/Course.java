@@ -114,11 +114,7 @@ public class Course {
     }
 
     public Lesson findLessonById(int lessonId) {
-        for (Lesson l : lessons) {
-            if (l.getLessonId() == lessonId)
-                return l;
-        }
-        return null;
+        return findLesson(lessonId);
     }
 
     public ArrayList<Student> getStudents() {
@@ -131,5 +127,20 @@ public class Course {
 
     public void setIsCompleted(boolean isCompleted) {
         this.isCompleted = isCompleted;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Course course = (Course) o;
+        return courseId == course.courseId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(courseId);
     }
 }

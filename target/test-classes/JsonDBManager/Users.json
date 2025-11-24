@@ -1,14 +1,21 @@
 [
     {
-        "certificates": [],
+        "certificates": [{
+            "studentId": 1,
+            "courseTitle": "course1",
+            "dateEarned": "2025-11-24",
+            "certificateId": "67eaf858-3b2b-4ecc-81e8-7a6188e078ea",
+            "courseId": 1
+        }],
         "progresses": [
             {
                 "completedLessons": [
                     1,
-                    2
+                    2,
+                    8
                 ],
-                "percentage": 0,
-                "completed": false,
+                "percentage": 100,
+                "completed": true,
                 "courseId": 1
             },
             {
@@ -49,6 +56,16 @@
         "hashedPass": "9b56ca8566a48b98a8c29a7fd307038ed555123439a937eb85d9c45166881e6e",
         "email": "mohammed@gmail.com",
         "username": "mohammed"
+    },
+    {
+        "certificates": [],
+        "progresses": [],
+        "enrolledCourses": [],
+        "type": "student",
+        "userID": 4,
+        "hashedPass": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+        "email": "xxxx@gmain.com",
+        "username": "xx"
     },
     {
         "type": "instructor",

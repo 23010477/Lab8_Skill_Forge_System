@@ -5,6 +5,9 @@ import CourseManagement.Questions;
 import CourseManagement.Quizzes;
 import CourseManagement.Progress;
 import Student.Student;
+import Student.StudentManagement;
+import Student.Certificate;
+import CourseManagement.Course;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +22,8 @@ private static final java.util.logging.Logger logger =
     private Lesson lesson;
     private Student student;
     private Progress progress;
+    private Course course;
+    private StudentManagement studentManagement;
 
     private ArrayList<ButtonGroup> answerGroups = new ArrayList<>();
     private JButton submitButton;
@@ -33,6 +38,8 @@ private static final java.util.logging.Logger logger =
         this.lesson = lesson;
         this.student = student;
         this.progress = progress;
+        this.course = progress.getCourse();
+        this.studentManagement = new StudentManagement();
 
         initComponents();   
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -143,10 +150,32 @@ private static final java.util.logging.Logger logger =
         }
     }
 
-  
-    if (!progress.getCompletedLessons().contains(lesson)) {
-        progress.addCompletedLesson(lesson);         
-            
+    // Save student progress after quiz submission
+    studentManagement.saveStudents();
+    
+    // Check if course is completed and generate certificate
+    if (progress.courseCompletion()) {
+        // Check if certificate already exists
+        boolean hasCertificate = false;
+        for (Certificate cert : student.getCertificates()) {
+            if (cert.getCourseId() == course.getCourseId()) {
+                hasCertificate = true;
+                break;
+            }
+        }
+
+        if (!hasCertificate) {
+            Certificate certificate = new Certificate(
+                    student.getUserID(),
+                    course.getCourseId(),
+                    course.getTitle());
+            student.addCertificate(certificate);
+            studentManagement.saveStudents();
+
+            JOptionPane.showMessageDialog(this,
+                    "Congratulations! You have completed the course and earned a certificate!",
+                    "Course Completed", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
     }
 
