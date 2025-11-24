@@ -162,6 +162,56 @@ public class JsonDBManager {
                     String hashedPass = o.optString("hashedPass", null);
                     Student s = new Student(userID, user, email, hashedPass);
 
+                    // Read enrolled courses
+                    if (o.has("enrolledCourses")) {
+                        JSONArray enrolledCourses = o.getJSONArray("enrolledCourses");
+                        for (int j = 0; j < enrolledCourses.length(); j++) {
+                            JSONObject courseObj = enrolledCourses.getJSONObject(j);
+                            int courseId = courseObj.optInt("courseId", 0);
+                            String title = courseObj.optString("title", "");
+                            String description = courseObj.optString("description", "");
+                            String instructorId = courseObj.optString("instructorId", "");
+                            Course course = new Course(courseId, title, description, instructorId);
+                            s.getEnrolledCourses().add(course);
+                        }
+                    }
+
+                    // Read progresses
+                    if (o.has("progresses")) {
+                        JSONArray progresses = o.getJSONArray("progresses");
+                        for (int j = 0; j < progresses.length(); j++) {
+                            JSONObject progressObj = progresses.getJSONObject(j);
+                            int courseId = progressObj.optInt("courseId", 0);
+
+                            // Find the corresponding course
+                            Course course = null;
+                            for (Course c : s.getEnrolledCourses()) {
+                                if (c.getCourseId() == courseId) {
+                                    course = c;
+                                    break;
+                                }
+                            }
+
+                            if (course != null) {
+                                CourseManagement.Progress progress = new CourseManagement.Progress(s, course);
+
+                                // Read completed lessons
+                                if (progressObj.has("completedLessons")) {
+                                    JSONArray completedLessons = progressObj.getJSONArray("completedLessons");
+                                    for (int k = 0; k < completedLessons.length(); k++) {
+                                        int lessonId = completedLessons.getInt(k);
+                                        Lesson lesson = course.findLessonById(lessonId);
+                                        if (lesson != null) {
+                                            progress.getCompletedLessons().add(lesson);
+                                        }
+                                    }
+                                }
+
+                                s.getProgresses().add(progress);
+                            }
+                        }
+                    }
+
                     if (o.has("certificates")) {
                         JSONArray certs = o.getJSONArray("certificates");
                         for (int j = 0; j < certs.length(); j++) {
@@ -188,7 +238,7 @@ public class JsonDBManager {
 
         JSONArray arr = new JSONArray();
 
-        // Write students with type field
+        // Write students with type field, enrolled courses, and progresses
         for (Student s : students) {
             JSONObject o = new JSONObject();
             o.put("type", "student");
@@ -196,6 +246,51 @@ public class JsonDBManager {
             o.put("username", s.getusername());
             o.put("email", s.getEmail());
             o.put("hashedPass", s.getHashedPass());
+
+            // Add enrolled courses
+            JSONArray enrolledCourses = new JSONArray();
+            for (Course c : s.getEnrolledCourses()) {
+                JSONObject courseObj = new JSONObject();
+                courseObj.put("courseId", c.getCourseId());
+                courseObj.put("title", c.getTitle());
+                courseObj.put("description", c.getDescription());
+                courseObj.put("instructorId", c.getInstructorId());
+                enrolledCourses.put(courseObj);
+            }
+            o.put("enrolledCourses", enrolledCourses);
+
+            // Add progresses
+            JSONArray progresses = new JSONArray();
+            for (CourseManagement.Progress p : s.getProgresses()) {
+                JSONObject progressObj = new JSONObject();
+                progressObj.put("courseId", p.getCourse().getCourseId());
+                progressObj.put("percentage", p.getPercentage());
+                progressObj.put("completed", p.courseCompletion());
+
+                // Add completed lessons
+                JSONArray completedLessons = new JSONArray();
+                for (Lesson l : p.getCompletedLessons()) {
+                    completedLessons.put(l.getLessonId());
+                }
+                progressObj.put("completedLessons", completedLessons);
+
+                progresses.put(progressObj);
+            }
+            o.put("progresses", progresses);
+
+            // Add certificates
+            JSONArray certificates = new JSONArray();
+            for (Certificate cert : s.getCertificates()) {
+                JSONObject certObj = new JSONObject();
+                certObj.put("certificateId", cert.getCertificateId());
+                certObj.put("studentId", cert.getStudentId());
+                certObj.put("courseId", cert.getCourseId());
+                certObj.put("courseTitle", cert.getCourseTitle());
+                certObj.put("dateEarned", cert.getDateEarned());
+                certificates.put(certObj);
+            }
+            o.put("certificates", certificates);
+
             arr.put(o);
         }
 
@@ -235,6 +330,21 @@ public class JsonDBManager {
                     String email = o.optString("email", null);
                     String hashedPass = o.optString("hashedPass", null);
                     Instructor instructor = new Instructor(instructorId, name, email, hashedPass);
+
+                    // Read created courses
+                    if (o.has("createdCourses")) {
+                        JSONArray createdCourses = o.getJSONArray("createdCourses");
+                        for (int j = 0; j < createdCourses.length(); j++) {
+                            JSONObject courseObj = createdCourses.getJSONObject(j);
+                            int courseId = courseObj.optInt("courseId", 0);
+                            String title = courseObj.optString("title", "");
+                            String description = courseObj.optString("description", "");
+                            String instrId = courseObj.optString("instructorId", "");
+                            Course course = new Course(courseId, title, description, instrId);
+                            instructor.getCourses().add(course);
+                        }
+                    }
+
                     instructors.add(instructor);
                 }
             }
@@ -250,7 +360,7 @@ public class JsonDBManager {
 
         JSONArray arr = new JSONArray();
 
-        // Write students with type field
+        // Write students with type field, enrolled courses, and progresses
         for (Student s : existingStudents) {
             JSONObject o = new JSONObject();
             o.put("type", "student");
@@ -258,10 +368,55 @@ public class JsonDBManager {
             o.put("username", s.getusername());
             o.put("email", s.getEmail());
             o.put("hashedPass", s.getHashedPass());
+
+            // Add enrolled courses
+            JSONArray enrolledCourses = new JSONArray();
+            for (Course c : s.getEnrolledCourses()) {
+                JSONObject courseObj = new JSONObject();
+                courseObj.put("courseId", c.getCourseId());
+                courseObj.put("title", c.getTitle());
+                courseObj.put("description", c.getDescription());
+                courseObj.put("instructorId", c.getInstructorId());
+                enrolledCourses.put(courseObj);
+            }
+            o.put("enrolledCourses", enrolledCourses);
+
+            // Add progresses
+            JSONArray progresses = new JSONArray();
+            for (CourseManagement.Progress p : s.getProgresses()) {
+                JSONObject progressObj = new JSONObject();
+                progressObj.put("courseId", p.getCourse().getCourseId());
+                progressObj.put("percentage", p.getPercentage());
+                progressObj.put("completed", p.courseCompletion());
+
+                // Add completed lessons
+                JSONArray completedLessons = new JSONArray();
+                for (Lesson l : p.getCompletedLessons()) {
+                    completedLessons.put(l.getLessonId());
+                }
+                progressObj.put("completedLessons", completedLessons);
+
+                progresses.put(progressObj);
+            }
+            o.put("progresses", progresses);
+
+            // Add certificates
+            JSONArray certificates = new JSONArray();
+            for (Certificate cert : s.getCertificates()) {
+                JSONObject certObj = new JSONObject();
+                certObj.put("certificateId", cert.getCertificateId());
+                certObj.put("studentId", cert.getStudentId());
+                certObj.put("courseId", cert.getCourseId());
+                certObj.put("courseTitle", cert.getCourseTitle());
+                certObj.put("dateEarned", cert.getDateEarned());
+                certificates.put(certObj);
+            }
+            o.put("certificates", certificates);
+
             arr.put(o);
         }
 
-        // Write instructors with type field
+        // Write instructors with type field and created courses
         for (Instructor i : instructors) {
             JSONObject o = new JSONObject();
             o.put("type", "instructor");
@@ -269,6 +424,19 @@ public class JsonDBManager {
             o.put("username", i.getUserName());
             o.put("email", i.getEmail());
             o.put("hashedPass", i.getHashedPass());
+
+            // Add created courses
+            JSONArray createdCourses = new JSONArray();
+            for (Course c : i.getCourses()) {
+                JSONObject courseObj = new JSONObject();
+                courseObj.put("courseId", c.getCourseId());
+                courseObj.put("title", c.getTitle());
+                courseObj.put("description", c.getDescription());
+                courseObj.put("instructorId", c.getInstructorId());
+                createdCourses.put(courseObj);
+            }
+            o.put("createdCourses", createdCourses);
+
             arr.put(o);
         }
 
