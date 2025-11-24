@@ -5,11 +5,9 @@ package Frontend;
 import CourseManagement.Course;
 import CourseManagement.CourseManagementSystem;
 import CourseManagement.CourseStatus;
-import Frontend.LoginFrame;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import static java.awt.PageAttributes.MediaType.C;
 import java.util.ArrayList;
 
 public class AdminDashboard extends JFrame {
@@ -72,9 +70,8 @@ public class AdminDashboard extends JFrame {
         coursesModel.setRowCount(0);
         ArrayList<Course> allCourses = courseManagement.getAllCourses();
 
-            Course c=null;
         for (Course course : allCourses) {
-            if (c.getStatus() == null || c.getStatus() == CourseStatus.PENDING) {
+            if (course.getStatus() == null || course.getStatus() == CourseStatus.PENDING) {
                 coursesModel.addRow(new Object[]{
                         course.getCourseId(),
                         course.getTitle(),

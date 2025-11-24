@@ -13,7 +13,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class InstructorDashboard extends JFrame {
 
@@ -374,6 +373,10 @@ public class InstructorDashboard extends JFrame {
         }
     }
 
+    private void loadCourses() {
+        loadData();
+    }
+
 
     private void updateSelectedCourse() {
         int selectedRow = coursesTable.getSelectedRow();
@@ -618,6 +621,13 @@ public class InstructorDashboard extends JFrame {
             }
         }
         return null;
+    }
+
+    private void handleTakeQuiz() {
+        JOptionPane.showMessageDialog(this, 
+            "Instructors cannot take quizzes. Only students can take quizzes.", 
+            "Information", 
+            JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void handleLogout() {

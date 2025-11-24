@@ -1,8 +1,6 @@
 package UserAccount;
 
-import java.util.List;
 import CourseManagement.Course;
-import java.time.Instant;
 import java.util.ArrayList;
 import CourseManagement.CourseStatus;
 import JsonDBManager.JsonDBManager;
@@ -14,8 +12,7 @@ public class AdminRole {
     private String userName;
     private String email;
     private String hashedPass;
-    private ArrayList<Course> createdCourses;
-    private List<Course> courses = new ArrayList<>();
+    private ArrayList<Course> approvedCourses;
 
     
     public AdminRole(int userId, String userName,String email,String passwordHash ){
@@ -23,7 +20,7 @@ public class AdminRole {
         this.userName = userName;
         this.email = email;
         this.hashedPass = passwordHash;
-        this.createdCourses = new ArrayList<>();
+        this.approvedCourses = new ArrayList<>();
     }
         public int getUserId() {
         return userId;
@@ -58,11 +55,11 @@ public class AdminRole {
     }
 
     public ArrayList<Course> getCourses() {
-        return createdCourses;
+        return approvedCourses;
     }
     
 public Course getCourseById(int courseId) {
-    for (Course c : createdCourses) {
+    for (Course c : approvedCourses) {
         if (c.getCourseId() == courseId) { 
             return c;
         }
@@ -76,7 +73,7 @@ public Course getCourseById(int courseId) {
         c.setStatus(CourseStatus.APPROVED);
         System.out.println("Course approved: " + c.getTitle());
         
-                JsonDBManager.saveCourses(createdCourses);
+                JsonDBManager.saveCourses(approvedCourses);
 
     } else {
         System.out.println("Course not found or not pending.");
@@ -88,7 +85,7 @@ public Course getCourseById(int courseId) {
         c.setStatus(CourseStatus.REJECTED);
         System.out.println("Course rejected: " + c.getTitle());
         
-                JsonDBManager.saveCourses(createdCourses);
+                JsonDBManager.saveCourses(approvedCourses);
 
     }
   }

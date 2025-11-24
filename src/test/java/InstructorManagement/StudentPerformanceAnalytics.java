@@ -23,7 +23,7 @@ public class StudentPerformanceAnalytics {
      
     }
     public void progressionData(Student student){
-        ArrayList<Progress> progresses=new ArrayList(student.getProgresses());
+        ArrayList<Progress> progresses=new ArrayList<>(student.getProgresses());
         for(Progress p:progresses){
             System.out.println("Course is: "+ p.getCourse().getTitle());
             System.out.println("Lesson completed: "+p.getCompletedLessons().size());

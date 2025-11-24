@@ -1,7 +1,6 @@
 package Frontend;
 
 import CourseManagement.Course;
-import CourseManagement.*;
 import CourseManagement.CourseManagementSystem;
 import CourseManagement.Lesson;
 import CourseManagement.Progress;
@@ -540,6 +539,50 @@ public class StudentDashboard extends JFrame {
         // Refresh lessons table
         handleViewLessons();
         loadData();
+    }
+
+    private void handleTakeQuiz() {
+        int selectedRow = lessonsTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a lesson to take quiz", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (currentViewedCourse == null) {
+            JOptionPane.showMessageDialog(this, "Please view a course's lessons first", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Course course = currentViewedCourse;
+        int lessonId = (Integer) lessonsModel.getValueAt(selectedRow, 0);
+        Lesson lesson = course.findLesson(lessonId);
+        
+        if (lesson == null) {
+            JOptionPane.showMessageDialog(this, "Lesson not found", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (lesson.getQuiz() == null || lesson.getQuiz().getQuestions().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "This lesson does not have a quiz", "Information",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        Progress progress = getProgressForCourse(course);
+        if (progress == null) {
+            JOptionPane.showMessageDialog(this, "Progress not found", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        new QuizzesDashboard(lesson, currentStudent, progress).setVisible(true);
+    }
+
+    private void enableQuizButton() {
+        int selectedRow = lessonsTable.getSelectedRow();
+        boolean enabled = selectedRow != -1 && currentViewedCourse != null;
+        takeQuizButton.setEnabled(enabled);
     }
 
     private void handleLogout() {
