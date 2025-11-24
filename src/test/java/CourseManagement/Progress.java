@@ -23,6 +23,9 @@ public class Progress {
         quizAttempts.putIfAbsent(lessonId, new ArrayList<>());
         quizAttempts.get(lessonId).add(stdScore);
 
+        Lesson l = course.findLessonById(lessonId);
+        addCompletedLesson(l);
+
 
 
 
@@ -41,7 +44,7 @@ public class Progress {
         }else {
             ArrayList<Integer> attempts = getListOfAttempts(lesson.getLessonId());
             for(int attempt : attempts){
-                if(attempt >= 50) {  // 23meloha percentages fl 7esbaaaa!!
+                if(attempt >= 50) {  // PERCENTAGE FL 7esbaaaa!!
                 completedLessons.add(lesson);
                 break;
                 }
@@ -81,5 +84,37 @@ public class Progress {
 
     }
 
+public double getAverageScore(Lesson lesson) {
+    ArrayList<Integer> attempts = getListOfAttempts(lesson.getLessonId());
+    if (attempts.isEmpty()) return 0.0;
+    int sum = 0;
+    for (int score : attempts) sum += score;
+    return (double) sum / attempts.size();
+}
+public boolean isLessonPassed(Lesson lesson) {
+    if (lesson.getQuiz() == null) return true; // no quiz, automatically passed
+    ArrayList<Integer> attempts = getListOfAttempts(lesson.getLessonId());
+    for (int score : attempts) {
+        if (score >= 50) return true; // passing threshold
+    }
+    return false;
+}
+public boolean canAccessLesson(Lesson lesson) {
+    int index = course.getLessons().indexOf(lesson);
+    if (index == 0) return true; // first lesson always accessible
+    Lesson prevLesson = course.getLessons().get(index - 1);
+    return completedLessons.contains(prevLesson);
+}
+public int getAttemptCount(Lesson lesson) {
+    return getListOfAttempts(lesson.getLessonId()).size();
+}
+public int getHighestScore(Lesson lesson) {
+    ArrayList<Integer> attempts = getListOfAttempts(lesson.getLessonId());
+    int max = 0;
+    for (int score : attempts) {
+        if (score > max) max = score;
+    }
+    return max;
+}
 
 }

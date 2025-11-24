@@ -8,15 +8,13 @@ import InstructorManagement.Instructor;
 import InstructorManagement.InstructorManagement;
 import Student.Student;
 import Student.StudentManagement;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Map;
 
-// <editor-fold defaultstate="collapsed" desc="InstructorDashboard Class">
-/**
- * Instructor dashboard for course and lesson management
- */
 public class InstructorDashboard extends JFrame {
 
     // <editor-fold defaultstate="collapsed" desc="Variables">
@@ -24,14 +22,19 @@ public class InstructorDashboard extends JFrame {
     private CourseManagementSystem courseManagement;
     private StudentManagement studentManagement;
     private Instructor currentInstructor;
+
     private JTable coursesTable, lessonsTable, studentsTable;
     private DefaultTableModel coursesModel, lessonsModel, studentsModel;
+
     private JTextField courseTitleField, courseDescriptionField, lessonTitleField, lessonContentField;
     private JTextArea courseDescriptionArea, lessonContentArea;
+
     private JButton createCourseButton, deleteCourseButton, addLessonButton, deleteLessonButton;
-    private JButton viewStudentsButton, viewStudentProgressButton, refreshButton, logoutButton;
+    private JButton viewStudentsButton, viewStudentProgressButton, refreshButton, logoutButton, insightsButton;
+
     private JTabbedPane tabbedPane;
     private Course selectedCourse;
+
     private int nextCourseId = 1;
     private int nextLessonId = 1;
     // </editor-fold>
@@ -47,7 +50,7 @@ public class InstructorDashboard extends JFrame {
         this.currentInstructor = instructor;
         initializeComponents();
         setupUI();
-        loadData();
+        loadCourses();
     }
     // </editor-fold>
 
@@ -60,9 +63,7 @@ public class InstructorDashboard extends JFrame {
         // Initialize instructor (for demo)
         if (currentInstructor == null) {
             ArrayList<Instructor> instructors = instructorManagement.getAllInstructors();
-            if (!instructors.isEmpty()) {
-                currentInstructor = instructors.get(0);
-            }
+            if (!instructors.isEmpty()) currentInstructor = instructors.get(0);
         }
 
         // Calculate next IDs
@@ -91,24 +92,29 @@ public class InstructorDashboard extends JFrame {
             }
         };
 
+
         coursesTable = new JTable(coursesModel);
         lessonsTable = new JTable(lessonsModel);
         studentsTable = new JTable(studentsModel);
+
 
         courseTitleField = new JTextField(20);
         courseDescriptionField = new JTextField(20);
         lessonTitleField = new JTextField(20);
         lessonContentField = new JTextField(20);
 
+
         courseDescriptionArea = new JTextArea(5, 30);
         courseDescriptionArea.setEditable(false);
         courseDescriptionArea.setWrapStyleWord(true);
         courseDescriptionArea.setLineWrap(true);
 
+
         lessonContentArea = new JTextArea(10, 40);
         lessonContentArea.setEditable(false);
         lessonContentArea.setWrapStyleWord(true);
         lessonContentArea.setLineWrap(true);
+
 
         createCourseButton = new JButton("Create Course");
         deleteCourseButton = new JButton("Delete Course");
@@ -118,18 +124,16 @@ public class InstructorDashboard extends JFrame {
         viewStudentProgressButton = new JButton("View Student Progress");
         refreshButton = new JButton("Refresh");
         logoutButton = new JButton("Logout");
+        insightsButton = new JButton("View Insights");
     }
+
 
     private void calculateNextIds() {
         ArrayList<Course> allCourses = courseManagement.getAllCourses();
         for (Course c : allCourses) {
-            if (c.getCourseId() >= nextCourseId) {
-                nextCourseId = c.getCourseId() + 1;
-            }
+            if (c.getCourseId() >= nextCourseId) nextCourseId = c.getCourseId() + 1;
             for (Lesson l : c.getLessons()) {
-                if (l.getLessonId() >= nextLessonId) {
-                    nextLessonId = l.getLessonId() + 1;
-                }
+                if (l.getLessonId() >= nextLessonId) nextLessonId = l.getLessonId() + 1;
             }
         }
     }
@@ -141,6 +145,7 @@ public class InstructorDashboard extends JFrame {
         setSize(1200, 800);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 
         tabbedPane = new JTabbedPane();
 
@@ -160,6 +165,7 @@ public class InstructorDashboard extends JFrame {
 
         // Bottom panel
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        bottomPanel.add(insightsButton);
         bottomPanel.add(refreshButton);
         bottomPanel.add(logoutButton);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -171,19 +177,16 @@ public class InstructorDashboard extends JFrame {
         deleteLessonButton.addActionListener(e -> handleDeleteLesson());
         viewStudentsButton.addActionListener(e -> handleViewStudents());
         viewStudentProgressButton.addActionListener(e -> handleViewStudentProgress());
-        refreshButton.addActionListener(e -> loadData());
+        refreshButton.addActionListener(e -> loadCourses());
         logoutButton.addActionListener(e -> handleLogout());
 
         coursesTable.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                updateSelectedCourse();
-            }
+            if (!e.getValueIsAdjusting()) updateSelectedCourse();
         });
 
+
         lessonsTable.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                updateLessonContent();
-            }
+            if (!e.getValueIsAdjusting()) updateLessonContent();
         });
     }
 
@@ -201,8 +204,10 @@ public class InstructorDashboard extends JFrame {
         buttonPanel.add(viewStudentsButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
+
         return panel;
     }
+
 
     private JPanel createCourseManagementPanel() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -216,19 +221,19 @@ public class InstructorDashboard extends JFrame {
         // Bottom: Create/Delete Course
         JPanel bottomPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(5,5,5,5);
         gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0;
         gbc.gridy = 0;
         bottomPanel.add(new JLabel("Course Title:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridx=1;
         bottomPanel.add(courseTitleField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
         bottomPanel.add(new JLabel("Description:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridx=1;
         bottomPanel.add(courseDescriptionField, gbc);
 
         gbc.gridx = 0;
@@ -239,10 +244,13 @@ public class InstructorDashboard extends JFrame {
         buttonPanel.add(deleteCourseButton);
         bottomPanel.add(buttonPanel, gbc);
 
+
         panel.add(bottomPanel, BorderLayout.SOUTH);
+
 
         return panel;
     }
+
 
     private JPanel createLessonManagementPanel() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -265,19 +273,19 @@ public class InstructorDashboard extends JFrame {
         // Lesson input fields
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(5,5,5,5);
         gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0;
         gbc.gridy = 0;
         inputPanel.add(new JLabel("Lesson Title:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridx=1;
         inputPanel.add(lessonTitleField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
         inputPanel.add(new JLabel("Lesson Content:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridx=1;
         inputPanel.add(lessonContentField, gbc);
 
         gbc.gridx = 0;
@@ -286,7 +294,13 @@ public class InstructorDashboard extends JFrame {
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(addLessonButton);
         buttonPanel.add(deleteLessonButton);
+
+        JButton takeQuizButton = new JButton("Take Quiz");
+        takeQuizButton.addActionListener(e -> handleTakeQuiz());
+        buttonPanel.add(takeQuizButton);
+
         inputPanel.add(buttonPanel, gbc);
+
 
         bottomPanel.add(inputPanel, BorderLayout.NORTH);
 
@@ -296,11 +310,14 @@ public class InstructorDashboard extends JFrame {
 
         panel.add(bottomPanel, BorderLayout.SOUTH);
 
+
         return panel;
     }
 
+
     private JPanel createStudentsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
+
 
         JLabel titleLabel = new JLabel("Enrolled Students");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
@@ -312,6 +329,7 @@ public class InstructorDashboard extends JFrame {
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(viewStudentProgressButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
+
 
         return panel;
     }
@@ -356,11 +374,13 @@ public class InstructorDashboard extends JFrame {
         }
     }
 
+
     private void updateSelectedCourse() {
         int selectedRow = coursesTable.getSelectedRow();
         if (selectedRow != -1) {
             int courseId = (Integer) coursesModel.getValueAt(selectedRow, 0);
             selectedCourse = courseManagement.findCourse(courseId);
+
 
             if (selectedCourse != null) {
                 courseDescriptionArea.setText(selectedCourse.getDescription());
@@ -376,6 +396,7 @@ public class InstructorDashboard extends JFrame {
             }
         }
     }
+
 
     private void updateLessonContent() {
         int selectedRow = lessonsTable.getSelectedRow();
@@ -409,8 +430,9 @@ public class InstructorDashboard extends JFrame {
 
         courseTitleField.setText("");
         courseDescriptionField.setText("");
-        loadData();
+        loadCourses();
     }
+
 
     private void handleDeleteCourse() {
         int selectedRow = coursesTable.getSelectedRow();
@@ -439,9 +461,10 @@ public class InstructorDashboard extends JFrame {
             JOptionPane.showMessageDialog(this, "Course deleted successfully", "Success",
                     JOptionPane.INFORMATION_MESSAGE);
             selectedCourse = null;
-            loadData();
+            loadCourses();
         }
     }
+
 
     private void handleAddLesson() {
         if (selectedCourse == null) {
@@ -464,9 +487,11 @@ public class InstructorDashboard extends JFrame {
 
         lessonTitleField.setText("");
         lessonContentField.setText("");
-        loadData();
+
+       
         updateSelectedCourse();
     }
+
 
     private void handleDeleteLesson() {
         if (selectedCourse == null) {
@@ -495,6 +520,7 @@ public class InstructorDashboard extends JFrame {
             updateSelectedCourse();
         }
     }
+
 
     private void handleViewStudents() {
         int selectedRow = coursesTable.getSelectedRow();
@@ -534,6 +560,7 @@ public class InstructorDashboard extends JFrame {
         }
         return 0.0;
     }
+
 
     private void handleViewStudentProgress() {
         int selectedRow = studentsTable.getSelectedRow();

@@ -1,14 +1,18 @@
 
 package InstructorManagement;
 import CourseManagement.*;
-import JsonDBManager.JsonDBManager;
 import Student.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 public class StudentPerformanceAnalytics {
-  private static final String USERS_FILE = "src/test/java/JsonDBManager/users.json";
-    public void recordQuizResults(){
-        //will implement once quiz class is ready
+
+    public void recordQuizResults(Student student, Lesson lesson, Progress progress, int score){
+    if (progress != null && lesson != null) {
+        progress.addAttempt(lesson.getLessonId(), score); 
     }
+}
+
     public void lessonCompletion(Lesson completedLesson,Progress p){
        try{
            p.addCompletedLesson(completedLesson);
@@ -29,8 +33,15 @@ public class StudentPerformanceAnalytics {
 
         
     }
-    public void lessonStatics(){
-       // will implement once quiz class is ready
+    public void lessonStatics(Lesson lesson,Progress p){
+       Quizzes quiz=lesson.getQuiz();
+       ArrayList<Questions> question=new ArrayList<>(quiz.getQuestions());
+       System.out.println("The lesson's Questions are: ");
+       for(Questions q:question){
+           System.out.println(q.getQuestion());
+       }
+       int noOfAttemps=p.getListOfAttempts(lesson.getLessonId()).size();
+       System.out.println("The number of the attemps are: "+ noOfAttemps);
     }
     public void courseStatics(Course c,StudentManagement studentManagement){
         ArrayList<Student> listOfStudents=new ArrayList<>(c.getStudents());
@@ -42,5 +53,42 @@ public class StudentPerformanceAnalytics {
         }
        
     }
-    
+public Map<String, Double> calculateQuizAverages(Course course) {
+    Map<String, Double> averages = new HashMap<>();
+
+    for (Lesson lesson : course.getLessons()) {
+        Quizzes quiz = lesson.getQuiz();
+        if (quiz == null || quiz.getQuestions().isEmpty()) {
+            averages.put(lesson.getTitle(), 0.0);
+            continue;
+        }
+
+        double totalScore = 0;
+        int totalAttempts = 0;
+
+        for (Student student : course.getStudents()) {
+            Progress progress = null;
+            for (Progress p : student.getProgresses()) {
+                if (p.getCourse().equals(course)) {
+                    progress = p;
+                    break;
+                }
+            }
+
+            if (progress != null) {
+                ArrayList<Integer> attempts = progress.getListOfAttempts(lesson.getLessonId());
+                for (int score : attempts) {
+                    totalScore += score;
+                    totalAttempts++;
+                }
+            }
+        }
+
+        double average = totalAttempts > 0 ? (totalScore / totalAttempts) : 0.0;
+        averages.put(lesson.getTitle(), average);
+    }
+
+    return averages;
+}
+
 }

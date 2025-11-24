@@ -1,6 +1,7 @@
 package Frontend;
 
 import CourseManagement.Course;
+import CourseManagement.*;
 import CourseManagement.CourseManagementSystem;
 import CourseManagement.Lesson;
 import CourseManagement.Progress;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 
 // <editor-fold defaultstate="collapsed" desc="StudentDashboard Class">
 /**
- * Student dashboard for course management and progress tracking
+ * Student dashboard for course management, progress tracking, and quiz access
  */
 public class StudentDashboard extends JFrame {
 
@@ -27,6 +28,7 @@ public class StudentDashboard extends JFrame {
     private JTextArea courseDescriptionArea, lessonContentArea;
     private JLabel progressLabel;
     private JButton enrollButton, unenrollButton, viewLessonsButton, completeLessonButton, refreshButton, logoutButton;
+    private JButton takeQuizButton; // <-- new button
     private JTabbedPane tabbedPane;
     private Course currentViewedCourse; // Track the course currently being viewed in Course Details tab
     // </editor-fold>
@@ -53,7 +55,6 @@ public class StudentDashboard extends JFrame {
 
         // Initialize student (for demo, you can get from login)
         if (currentStudent == null) {
-            // Get first student as demo - in real app, get from login
             ArrayList<Student> students = studentManagement.getAllStudents();
             if (!students.isEmpty()) {
                 currentStudent = students.get(0);
@@ -70,24 +71,18 @@ public class StudentDashboard extends JFrame {
 
         availableModel = new DefaultTableModel(new Object[] { "Course ID", "Title", "Description", "Instructor" }, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
+            public boolean isCellEditable(int row, int column) { return false; }
         };
 
         lessonsModel = new DefaultTableModel(new Object[] { "Lesson ID", "Title", "Status" }, 0) {
 
             @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
+            public boolean isCellEditable(int row, int column) { return false; }
         };
 
         certificatesModel = new DefaultTableModel(new Object[] { "Certificate ID", "Course", "Date Earned" }, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
+            public boolean isCellEditable(int row, int column) { return false; }
         };
 
         enrolledCoursesTable = new JTable(enrolledModel);
@@ -113,6 +108,8 @@ public class StudentDashboard extends JFrame {
         completeLessonButton = new JButton("Mark Lesson Complete");
         refreshButton = new JButton("Refresh");
         logoutButton = new JButton("Logout");
+        
+        takeQuizButton = new JButton("Take Quiz"); // <-- new button
     }
     // </editor-fold>
 
@@ -154,27 +151,26 @@ public class StudentDashboard extends JFrame {
         unenrollButton.addActionListener(e -> handleUnenroll());
         viewLessonsButton.addActionListener(e -> handleViewLessons());
         completeLessonButton.addActionListener(e -> handleCompleteLesson());
+        takeQuizButton.addActionListener(e -> handleTakeQuiz()); // <-- new listener
         refreshButton.addActionListener(e -> loadData());
         logoutButton.addActionListener(e -> handleLogout());
 
         enrolledCoursesTable.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                updateCourseDescription();
-            }
+            if (!e.getValueIsAdjusting()) updateCourseDescription();
         });
 
         availableCoursesTable.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                updateAvailableCourseDescription();
-            }
+            if (!e.getValueIsAdjusting()) updateAvailableCourseDescription();
         });
 
         lessonsTable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 updateLessonContent();
+                enableQuizButton();
             }
         });
     }
+
 
     private JPanel createMyCoursesPanel() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -247,6 +243,7 @@ public class StudentDashboard extends JFrame {
         JPanel progressPanel = new JPanel(new FlowLayout());
         progressPanel.add(progressLabel);
         progressPanel.add(completeLessonButton);
+        progressPanel.add(takeQuizButton); // <-- new button
         bottomPanel.add(progressPanel, BorderLayout.SOUTH);
 
         panel.add(bottomPanel, BorderLayout.SOUTH);
@@ -291,8 +288,7 @@ public class StudentDashboard extends JFrame {
         }
         // Load available courses (not enrolled)
         availableModel.setRowCount(0);
-        ArrayList<Course> allCourses = courseManagement.getAllCourses();
-        for (Course course : allCourses) {
+        for (Course course : courseManagement.getAllCourses()) {
             if (!currentStudent.getEnrolledCourses().contains(course)) {
                 availableModel.addRow(new Object[] {
                         course.getCourseId(),
@@ -316,9 +312,7 @@ public class StudentDashboard extends JFrame {
 
     private double getCourseProgress(Course course) {
         for (Progress progress : currentStudent.getProgresses()) {
-            if (progress.getCourse().equals(course)) {
-                return progress.getPercentage();
-            }
+            if (progress.getCourse().equals(course)) return progress.getPercentage();
         }
         return 0.0;
     }
@@ -567,6 +561,5 @@ public class StudentDashboard extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new StudentDashboard().setVisible(true));
     }
-    // </editor-fold>
 }
 // </editor-fold>

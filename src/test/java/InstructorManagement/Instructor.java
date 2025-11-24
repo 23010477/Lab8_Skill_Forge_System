@@ -134,4 +134,12 @@ public class Instructor {
             System.out.println(s.getUsername());
         }
     }
+    public ArrayList<Student> viewAllEnrolledInstructorStudents(){
+        ArrayList<Student> students=new ArrayList<>();
+        for (Course c : createdCourses){
+            students.addAll(c.getStudents());
+        }
+        return students;
+    }
+    
 }
