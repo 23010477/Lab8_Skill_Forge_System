@@ -11,6 +11,7 @@ public class Course {
     private ArrayList<Lesson> lessons;
     private ArrayList<Lesson> completedLessons;
     private ArrayList<Student> students;
+    private boolean isCompleted;
     private CourseStatus status = CourseStatus.PENDING;
 
     public Course(int courseId, String title, String description, String instructorId) {
@@ -122,5 +123,13 @@ public class Course {
 
     public ArrayList<Student> getStudents() {
         return students;
+    }
+
+    public boolean getIsCompleted() {
+        return isCompleted;
+    }
+
+    public void setIsCompleted(boolean isCompleted) {
+        this.isCompleted = isCompleted;
     }
 }
